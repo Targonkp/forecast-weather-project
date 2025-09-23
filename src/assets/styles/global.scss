@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&family=Nata+Sans:wght@100..900&display=swap');
+
+*{
+  margin: 0;
+  padding: 0;
+}
+
+html{
+  scroll-behavior: smooth;
+}
+
+body{
+  font-family: "Libertinus Sans", sans-serif;
+  font-weight: 400;
+  background: $background-color-body;
+  color: $main_color;
+}
