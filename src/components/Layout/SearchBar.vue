@@ -13,13 +13,20 @@
       </button>
     </div>
     <div class="list-city">
+      <div class="list-city-container">
+      <TransitionGroup
+        name="list"
+        tag="div"
+      >
       <div
           v-for="item of useDestinationStore.listLocations"
-          :key="item.lat"
+          :key="`${item.lat},${item.lon}`"
           class="list-city__item"
           @click="handleCityClick(item)"
       >
         {{ item.local_names?.ru || item.name }}  ({{item.country}}{{item.state ? ` - ${item.state}` : ''}})
+      </div>
+      </TransitionGroup>
       </div>
     </div>
   </div>
@@ -119,6 +126,15 @@ button:disabled {
   flex-direction: column;
   max-width: 600px;
   margin: 0 auto;
+  position: relative;
+}
+
+.list-city-container{
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 10;
 }
 
 .list-city__item {
@@ -141,5 +157,18 @@ button:disabled {
 
 .list-city__item:hover {
   background-color: #edf2f7;
+}
+
+.list-enter-active {
+  transition: all 0.3s ease;
+}
+.list-leave-active {
+  transition: all 0.2s ease;
+  position: absolute;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 </style>

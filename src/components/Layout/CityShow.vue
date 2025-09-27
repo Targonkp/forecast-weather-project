@@ -90,7 +90,7 @@ export default {
   watch: {
     currentWeather(newValue) {
       console.log("Обновлена погода:", newValue);
-    }
+    },
   },
 };
 </script>
@@ -101,7 +101,7 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 2rem;
+  padding: 32px;
   border-radius: 10px;
   background: url("/public/autumn.png") center center / cover no-repeat;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -110,8 +110,8 @@ export default {
 /* Загрузка */
 .loading-container {
   text-align: center;
-  color: white;
-  font-size: 1.2rem;
+  color: #ffffff;
+  font-size: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -134,17 +134,17 @@ export default {
 /* Ошибка */
 .error-card {
   text-align: center;
-  color: #dc3545;
+  color: $red_color;
   background-color: #f8d7da;
-  padding: 2rem;
+  padding: 32px;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(220, 53, 69, 0.2);
-  font-size: 1.2rem;
+  font-size: 20px;
   max-width: 400px;
 
   .error-icon {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
+    font-size: 32px;
+    margin-bottom: 8px;
   }
 }
 
@@ -165,13 +165,13 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 20px;
     flex-wrap: wrap;
 
     .city-name {
       font-size: 2rem;
       font-weight: 700;
-      color: #2c3e50;
+      color: $gray_color;
       margin: 0;
       flex: 1;
       text-align: left;
@@ -228,7 +228,7 @@ export default {
 
       .value {
         font-weight: 500;
-        color: #2c3e50;
+        color: $gray_color;
         font-size: 18px;
       }
     }

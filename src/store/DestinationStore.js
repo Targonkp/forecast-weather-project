@@ -1,4 +1,5 @@
 import {defineStore} from "pinia";
+
 const apiKey = process.env.VUE_APP_OPENWEATHER_API_KEY; //API ключ из env для получения погоды
 const CACHE_DURATION_MINUTES = 10; //частота обновления кэша, чтобы запрос не отправлялся каждый раз при переходе на компонент с погодой
 
@@ -15,11 +16,13 @@ export const useDestinationStore = defineStore(
                 loading: false, //для загрузки
                 currentWeather: null, //переменная для объекта, получаемого с openweather
                 lastGeoDataFetchedAt: null, // время последнего успешного запроса
-                listLocations: []
+                lastForecastFetchedAt: null,
+                listLocations: [], //список городов, подходящих под запрос
+                listForecasts: [], //список с данными о прогнозе погоды
             }
         },
         actions: {
-            isCacheValid(){
+            isCacheValid() {
                 if (!this.lastGeoDataFetchedAt)
                     return false;
 
@@ -30,8 +33,8 @@ export const useDestinationStore = defineStore(
                 //Если false - Кеш устарел → нужно загрузить новые данные.
                 return current_time - this.lastGeoDataFetchedAt < catch_duration;
             },
-            fetchGetLocations(cityName){
-                return fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=36b59a428ae07106b683317f19604659`)
+            fetchGetLocations(cityName) {
+                return fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=${apiKey}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`Fetch failed: ${response.status} ${response.statusText}`);
@@ -40,105 +43,106 @@ export const useDestinationStore = defineStore(
                     })
                     .then(data => {
                         // поиск точных  совпадений в названиях и только потом добавляю в отдельный массив, объявленный ранее
-                        //поиск как в английской, так и в русской версии
+                        //поиск как в английской, так и в русской версии - без учёта буквы «ё»
+                        const normalize = (str) => {
+                            return str?.trim().toLowerCase().replace(/ё/g, 'е') || '';
+                        };
                         this.listLocations = data.filter(item =>
-                            item.name?.trim().toLowerCase() === cityName.trim().toLowerCase() ||
-                            item.local_names?.ru?.trim().toLowerCase() === cityName.trim().toLowerCase()
+                            normalize(item.name) === normalize(cityName) ||
+                            normalize(item.local_names?.ru) === normalize(cityName)
                         );
                     })
                     .catch(error => {
                         console.error(error);
-                        // Можно также сохранить ошибку в состояние, если нужно:
                         this.error = error.message;
-                        throw error; // пробрасываем ошибку, чтобы вызывающий код мог её обработать
+                        throw error; // пробрасывание ошибки, чтобы вызывающий код мог её обработать
                     });
             },
-            fetchGeoData(){
-                if (this.isCacheValid()){
-                    return;
+            fetchGeoData() {
+                if (this.isCacheValid()) {
+                    return Promise.resolve();
                 }
                 this.loading = true;
-                //получение текущего IP-адреса
-                fetch("https://api.ipify.org?format=json")
-                    .then(res =>
-                        {
-                            if (!res.ok){
-                                throw new Error(`IP API error:: ${res.status}`)
-                            }
-                            return res.json()
+                this.error = null; // сброс ошибки перед загрузкой
+                return fetch("https://api.ipify.org?format=json")
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error(`IP API error:: ${res.status}`);
                         }
-                    )
+                        return res.json();
+                    })
                     .then(data => {
-                            this.ip = data.ip;
-                            //получение географических данных по ip
-                            return fetch(`https://ipwho.is/${this.ip}`)
+                        this.ip = data.ip;
+                        return fetch(`https://ipwho.is/${this.ip}`);
+                    })
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error(`Geo API error:: ${res.status}`);
                         }
-                    )
-                    .then(res =>
-                        {
-                            if (!res.ok){
-                                throw new Error(`Geo API error:: ${res.status}`)
-                            }
-                            return res.json()
-                        }
-                    )
+                        return res.json();
+                    })
                     .then(data => {
-                            this.city = data.city;
-                            //получение текущего прогноза
-                            return fetch(`https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=${apiKey}&lang=ru&units=metric`)
+                        this.city = data.city;
+                        return fetch(`https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=${apiKey}&lang=ru&units=metric`);
+                    })
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error(`Weather API error:: ${res.status}`);
                         }
-                    )
-                    .then(res =>
-                        {
-                            if (!res.ok){
-                                throw new Error(`Weather API error:: ${res.status}`)
-                            }
-                            return res.json()
-                        }
-                    )
+                        return res.json();
+                    })
                     .then(data => {
                         this.currentWeather = data;
-                        //Время успешной загрузки
+                        this.city = data.name;
+                        this.country = data.sys.country;
                         this.lastGeoDataFetchedAt = Date.now();
+                        this.error = null; // при успехе сбрасываем ошибку
                     })
                     .catch(err => {
                         console.error('Failed to fetch city:', err);
-                        this.error = err.message || 'Не удалось определить ваше местоположение'
+                        this.error = err.message || 'Не удалось определить ваше местоположение';
                         this.ip = null;
                         this.city = null;
                         this.country = null;
+                        this.currentWeather = null; // очистка данных при ошибке
+                        throw err;
                     })
-                    .finally(() => this.loading = false)
+                    .finally(() => {
+                        this.loading = false;  // обязательно менять loading в любом случае
+                    });
             },
-            fetchFindCityWeather(cityName, countryCode){
-                if (!cityName || cityName.transfer === ""){
+            fetchFindCityWeather(cityName, countryCode) {
+                if (!cityName || cityName.trim() === "") {
                     this.error = 'Введите название города';
                     return;
                 }
-
                 this.loading = true;
                 this.error = null;
                 this.city = null;
                 this.currentWeather = null;
 
+                // Сброс последнего прогноза, чтобы гарантировать свежий запрос
+                this.lastForecastFetchedAt = null;
+
                 //Запрос погоды по введенному городу
                 fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName},${countryCode}&appid=${apiKey}&lang=ru&units=metric`)
-                    .then(res =>
-                    {
-                        if (!res.ok){
+                    .then(res => {
+                        if (!res.ok) {
                             throw new Error(`Weather API error - City search: ${res.status}`)
                         }
                         return res.json()
                     })
-                .then(data => {
-                    //проверка на ошибку 404 - если город не найден
-                    if (data.cod === "404"){
-                        throw new Error('Город не найден. Проверьте название')
-                    }
-                    this.city = data.name;
-                    this.currentWeather = data;
-                    this.lastGeoDataFetchedAt = Date.now();
-                })
+                    .then(data => {
+                        //проверка на ошибку 404 - если город не найден
+                        if (data.cod === "404") {
+                            throw new Error('Город не найден. Проверьте название')
+                        }
+                        //обновляю данные в state
+                        this.city = data.name;
+                        this.country = data.sys.country;
+                        this.currentWeather = data;
+                        return this.fetchWeatherForecast();
+                    })
                     .catch(err => {
                         console.error('Failed to fetch city:', err);
                         this.error = err.message || 'Не удалось получить погоду для этого города';
@@ -147,6 +151,37 @@ export const useDestinationStore = defineStore(
                     })
                     .finally(() => this.loading = false)
             },
+            fetchWeatherForecast() {
+                if (this.lastForecastFetchedAt && (Date.now() - this.lastForecastFetchedAt) < CACHE_DURATION_MINUTES * 60 * 1000) {
+                    return Promise.resolve(); // Кэш свежий — не грузим заново
+                }
+                this.loading = true;
+
+               return fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${this.city},${this.country}&appid=${apiKey}&lang=ru&units=metric`)
+                    .then(res => {
+                            if (!res.ok) {
+                                throw new Error(`Weather Forecast error:: ${res.status}`)
+                            }
+                            return res.json()
+                        }
+                    )
+                    .then(data => {
+                            this.listForecasts = data;
+                            this.lastForecastFetchedAt = Date.now();
+                            console.log(this.listForecasts)
+                        }
+                    )
+                    .catch(err => {
+                        console.error('Failed to forecast:', err);
+                        this.error = err.message || 'Не удалось получить данные о прогнозе погоды'
+                        this.ip = null;
+                        this.city = null;
+                        this.country = null;
+                    })
+                    .finally(
+                        () => this.loading = false
+                    )
+            }
         },
     }
 )

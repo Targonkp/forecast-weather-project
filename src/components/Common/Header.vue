@@ -2,8 +2,8 @@
  <header>
     <block-wrap>
       <nav>
-        <router-link to="/" v-slot="{isActive}"><span :class="['menu-link', isActive && 'menu-link-active']">Home</span></router-link> |
-        <router-link to="/about" v-slot="{isActive}"><span :class="['menu-link', isActive && 'menu-link-active']">About</span></router-link>
+        <router-link to="/" v-slot="{isActive}"><span :class="['menu-link', isActive && 'menu-link-active']">Главная</span></router-link> |
+        <router-link to="/forecast" v-slot="{isActive}"><span :class="['menu-link', isActive && 'menu-link-active']">Прогноз</span></router-link>
       </nav>
     </block-wrap>
  </header>
