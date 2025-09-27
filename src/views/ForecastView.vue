@@ -4,12 +4,28 @@
     <div class="forecasts-list-wrap">
       <h1 class="forecasts-header">Прогноз погоды на 5 дней - {{cityName}}</h1>
       <div class="forecasts-list">
-      <forecast-item
-          v-for="forecast in listForecasts"
-          :key="forecast.date"
-          :forecast="forecast"
-      />
-    </div>
+      <Carousel
+          :items-to-show="1.5"
+          :wrap-around="false"
+          breakpointMode="carousel"
+          snap-align="center"
+          :breakpoints="breakpoints"
+          :transition="350"
+          :gap="20"
+          class="forecasts-carousel"
+      >
+        <Slide
+            v-for="forecast in listForecasts"
+            :key="forecast.date"
+        >
+          <forecast-item :forecast="forecast"/>
+        </Slide>
+        <template #addons>
+          <Navigation />
+          <Pagination />
+        </template>
+      </Carousel>
+      </div>
     </div>
   </Main>
   <Footer/>
@@ -21,10 +37,42 @@ import Footer from "@/components/Common/Footer.vue";
 import Main from "@/components/Common/Main.vue";
 import { useDestinationStore } from "@/store/DestinationStore";
 import ForecastItem from "@/components/Layout/ForecastItem.vue";
+import { Carousel, Slide, Navigation, Pagination } from 'vue3-carousel';
+import 'vue3-carousel/dist/carousel.css';
 
 export default {
   name: 'Forecast',
-  components: {ForecastItem, Footer, Header, Main},
+  components: {ForecastItem, Footer, Header, Main, Carousel, Slide, Navigation, Pagination},
+  data(){
+    return {
+      breakpoints: {
+        380: {
+          itemsToShow: 2,
+          snapAlign: 'start'
+        },
+        576: {
+          itemsToShow: 3,
+          snapAlign: 'start'
+        },
+        768: {
+          itemsToShow: 4,
+          snapAlign: 'start'
+        },
+        1024: {
+          itemsToShow: 5,
+          snapAlign: 'start'
+        },
+        1200: {
+          itemsToShow: 6,
+          snapAlign: 'start'
+        },
+        1600: {
+          itemsToShow: 7,
+          snapAlign: 'start'
+        },
+      }
+    }
+  },
   computed: {
     destinationStore() {
       return useDestinationStore();
@@ -46,7 +94,7 @@ export default {
   }
 
   .forecasts-list{
-    display: flex;
+    cursor: pointer;
   }
 
   .forecasts-header{
