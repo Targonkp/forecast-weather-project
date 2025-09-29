@@ -4,7 +4,7 @@ import HomeView from '../views/HomeView.vue'
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'Home',
     component: HomeView,
     meta: {
       title: 'Главная — Текущая погода',
@@ -13,15 +13,20 @@ const routes = [
   },
   {
     path: '/forecast',
-    name: 'forecast',
+    name: 'Forecast',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/ForecastView.vue'),
+    component: () => import(/* webpackChunkName: "forecast" */ '../views/ForecastView.vue'),
     meta: {
       title: 'Прогноз погоды на 5 дней',
       description: 'Подробный прогноз погоды на ближайшие дни: температура, осадки, ветер и другие метеорологические данные.'
     }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import(/* webpackChunkName: "notfound" */ '../views/NotFound.vue'),
   }
 ]
 

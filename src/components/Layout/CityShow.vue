@@ -22,8 +22,12 @@
       </div>
 
       <div class="temperature">
-        <span class="temp-value">{{ Math.round(currentWeather.main.temp) }}°C</span>
-        <span class="feels-like">По ощущению: {{ Math.round(currentWeather.main.feels_like) }}°C</span>
+        <span class="temp-value">
+          {{formattedTemp}}
+        </span>
+        <span class="feels-like">По ощущению:
+           {{formattedFeelTemp}}
+        </span>
       </div>
 
       <div class="weather-details">
@@ -79,6 +83,15 @@ export default {
     },
     currentWeather() {
       return this.destinationStore.currentWeather;
+    },
+    //добавление знака (+), если больше 0, так как API не выводит с +, если положительная температура
+    formattedTemp() {
+      const temp = Math.round(this.currentWeather.main.temp);
+      return temp >= 0 ? `+${temp}°C` : `${temp}°C`;
+    },
+    formattedFeelTemp() {
+      const temp = Math.round(this.currentWeather.main.feels_like);
+      return temp >= 0 ? `+${temp}°C` : `${temp}°C`;
     }
   },
   methods: {

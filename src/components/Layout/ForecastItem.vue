@@ -2,8 +2,8 @@
   <div class="forecast-item">
     <div class="date">{{ formatDate(forecast.dt_txt) }}</div>
     <div class="temp-wrap">
-      <div class="temp">Температура: {{ Math.round(forecast.main.temp) }}°C</div>
-      <div class="temp">По ощущению: {{ Math.round(forecast.main.feels_like) }}°C</div>
+      <div class="temp">Температура: {{formattedTemp}}</div>
+      <div class="temp">По ощущению: {{formattedFeelTemp}}</div>
     </div>
     <div class="wind">Скорость ветра: {{ Math.round(forecast.wind.speed) }} м/с</div>
     <div class="description-wrap">
@@ -22,6 +22,17 @@ export default {
     forecast: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    //добавление знака (+), если больше 0, так как API не выводит с +, если положительная температура
+    formattedTemp() {
+      const temp = Math.round(this.forecast.main.temp);
+      return temp >= 0 ? `+${temp}°C` : `${temp}°C`;
+    },
+    formattedFeelTemp() {
+      const temp = Math.round(this.forecast.main.feels_like);
+      return temp >= 0 ? `+${temp}°C` : `${temp}°C`;
     }
   },
   methods: {
@@ -61,6 +72,14 @@ export default {
   color: $gray_color;
   max-width: 220px;
   width: 100%;
+
+  @include medium{
+    max-width: 200px;
+  }
+
+  @include small{
+    max-width: 180px;
+  }
 }
 
 .date {

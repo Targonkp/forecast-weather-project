@@ -12,6 +12,7 @@ export default {
 
 <style lang="scss" scoped>
   .block-wrap{
+    flex: 1;
     max-width: 1920px;
     padding: 20px 3%;
     box-sizing: border-box;

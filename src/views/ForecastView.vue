@@ -2,30 +2,41 @@
   <Header/>
   <Main>
     <div class="forecasts-list-wrap">
-      <h1 class="forecasts-header">Прогноз погоды на 5 дней - {{cityName}}</h1>
-      <div class="forecasts-list">
-      <Carousel
-          :items-to-show="1.5"
-          :wrap-around="false"
-          breakpointMode="carousel"
-          snap-align="center"
-          :breakpoints="breakpoints"
-          :transition="350"
-          :gap="20"
-          class="forecasts-carousel"
-      >
-        <Slide
-            v-for="forecast in listForecasts"
-            :key="forecast.date"
-        >
-          <forecast-item :forecast="forecast"/>
-        </Slide>
-        <template #addons>
-          <Navigation />
-          <Pagination />
-        </template>
-      </Carousel>
+      <div v-if="listForecasts && listForecasts.length" class="forecasts-list-wrap">
+        <h1 class="forecasts-header">Прогноз погоды на 5 дней - {{cityName}}</h1>
+        <div class="forecasts-list">
+          <Carousel
+              :wrap-around="false"
+              breakpointMode="carousel"
+              snap-align="center"
+              :breakpoints="breakpoints"
+              :transition="350"
+              :mouse-wheel="true"
+              :gap="20"
+              class="forecasts-carousel"
+              :i18n="{
+              ariaNextSlide: 'К следующему слайду',
+              ariaPreviousSlide: 'К предыдущему слайду'
+              }"
+          >
+            <Slide
+                v-for="forecast in listForecasts"
+                :key="forecast.date"
+            >
+              <forecast-item :forecast="forecast"/>
+            </Slide>
+            <template #addons>
+              <Navigation />
+              <Pagination class="additional-pagination-class" />
+            </template>
+          </Carousel>
+        </div>
       </div>
+      <div v-else-if="loading" class="loading-container">
+        <div class="spinner"></div>
+        <p>Загружаем данные о погоде...</p>
+      </div>
+      <div v-else class="no-data">Нет данных о погоде</div>
     </div>
   </Main>
   <Footer/>
@@ -46,30 +57,38 @@ export default {
   data(){
     return {
       breakpoints: {
-        380: {
-          itemsToShow: 2,
-          snapAlign: 'start'
+        0:{
+          itemsToShow: 'auto',
+          snapAlign: 'center'
         },
-        576: {
-          itemsToShow: 3,
+        480:{
+          itemsToShow: 'auto',
           snapAlign: 'start'
-        },
-        768: {
-          itemsToShow: 4,
-          snapAlign: 'start'
-        },
-        1024: {
-          itemsToShow: 5,
-          snapAlign: 'start'
-        },
-        1200: {
-          itemsToShow: 6,
-          snapAlign: 'start'
-        },
-        1600: {
-          itemsToShow: 7,
-          snapAlign: 'start'
-        },
+        }
+        // 380: {
+        //   itemsToShow: 2,
+        //   snapAlign: 'start'
+        // },
+        // 576: {
+        //   itemsToShow: 3,
+        //   snapAlign: 'start'
+        // },
+        // 768: {
+        //   itemsToShow: '4',
+        //   snapAlign: 'start'
+        // },
+        // 1024: {
+        //   itemsToShow: 5,
+        //   snapAlign: 'start'
+        // },
+        // 1200: {
+        //   itemsToShow: 6,
+        //   snapAlign: 'start'
+        // },
+        // 1600: {
+        //   itemsToShow: 7,
+        //   snapAlign: 'start'
+        // },
       }
     }
   },
@@ -77,13 +96,16 @@ export default {
     destinationStore() {
       return useDestinationStore();
     },
+    loading() {
+      return this.destinationStore.loading;
+    },
     cityName(){
       return this.destinationStore.listForecasts.city.name;
     },
     listForecasts(){
       return this.destinationStore.listForecasts.list;
     }
-  }
+  },
 }
 </script>
 
@@ -101,5 +123,51 @@ export default {
     font-size: 42px;
     line-height: 120%;
     margin: 8px 0 14px 0;
+
+    @include large{
+      font-size: 40px;
+    }
+
+    @include medium{
+      font-size: 36px;
+    }
+
+    @include small{
+      font-size: 32px;
+    }
+  }
+
+  .additional-pagination-class{
+    bottom: 0;
+  }
+  //глубокий селектор - чотбы пробросить стили вглубль дочернего компонента
+  :deep(.carousel__prev),
+  :deep(.carousel__next) {
+    background: #bfaeae;
+    border-radius: 50%;
+  }
+
+  /* Загрузка */
+  .loading-container {
+    text-align: center;
+    color: #ffffff;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   }
 </style>
