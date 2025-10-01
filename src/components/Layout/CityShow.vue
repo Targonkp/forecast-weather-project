@@ -62,6 +62,8 @@
 
 <script>
 import { useDestinationStore } from "@/store/DestinationStore";
+//подгружаю картинку из отдельного файла, куда они импортированы из assets
+import { backgroundMap, defaultBg } from '@/assets/backgroundMap.js';
 
 export default {
   name: "CityShow",
@@ -106,29 +108,8 @@ export default {
       return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
     },
     getBackgroundImage(iconCode){
-      const weatherBackgroundMap = {
-        '01d': 'sunny.jpg',
-        '01n': 'clear-night.jpg',
-        '02d': 'few-clouds.jpg',
-        '02n': 'few-clouds-night.jpg',
-        '03d': 'cloudy.jpg',
-        '03n': 'cloudy-night.jpg',
-        '04d': 'broken-clouds.jpg',
-        '04n': 'broken-clouds.jpg',
-        '09d': 'shower-rain.jpg',
-        '09n': 'shower-rain-night.jpg',
-        '10d': 'rain.jpg',
-        '10n': 'rain-night.jpg',
-        '11d': 'thunderstorm.jpg',
-        '11n': 'thunderstorm-night.jpg',
-        '13d': 'snow.jpg',
-        '13n': 'snow.jpg',
-        '50d': 'mist.jpg',
-        '50n': 'mist.jpg'
-      };
+      return backgroundMap[iconCode] || defaultBg;
 
-      const fileName = weatherBackgroundMap[iconCode] || 'default.jpg';
-      return `/weather-backgrounds/${fileName}`; // путь к фону
     }
   },
   watch: {
