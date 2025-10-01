@@ -1,6 +1,6 @@
 <template>
   <div class="main-block" :style="{ backgroundImage }">
-    <!-- Загрузка -->
+  <!-- Загрузка -->
     <div v-if="loading" class="loading-container">
       <div class="spinner"></div>
       <p>Загружаем данные о погоде...</p>
@@ -67,6 +67,11 @@ import { backgroundMap, defaultBg } from '@/assets/backgroundMap.js';
 
 export default {
   name: "CityShow",
+  data() {
+    return {
+      showBackground: false,
+    }
+  },
   computed: {
     destinationStore() {
       return useDestinationStore();
@@ -112,11 +117,6 @@ export default {
 
     }
   },
-  watch: {
-    currentWeather(newValue){
-      console.log(newValue)
-    }
-  }
 };
 </script>
 
@@ -131,14 +131,16 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
   padding: 44px;
   border-radius: 10px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: background-image 0.5s ease-in-out;
   font-family: "Alan Sans", sans-serif;
+  transition: background-image 0.5s ease-in-out;
+  min-height: 700px;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 /* Загрузка */

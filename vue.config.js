@@ -1,6 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
-  publicPath: '/forecast-weather-project/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/forecast-weather-project/' : '/',
   transpileDependencies: true,
   css: {
     loaderOptions: {

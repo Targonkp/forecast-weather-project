@@ -39,7 +39,7 @@ export default {
         'Суббота'
       ]
 
-      // Получаем день недели (0–6) - now.getDay() возвращает номер дня недели
+      // Получение дня недели (0–6) - now.getDay() возвращает номер дня недели
       const dayName = daysOfWeek[now.getDay()]
 
       const hours = now.getHours();
