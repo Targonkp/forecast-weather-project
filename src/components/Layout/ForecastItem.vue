@@ -48,7 +48,10 @@ export default {
         hour: '2-digit',
         minute: '2-digit'
       };
-      return date.toLocaleString('ru-RU', options);
+      let formatted = date.toLocaleString('ru-RU', options);
+      // Делаю первую букву заглавной - делю результат на две части и затем снова собираю
+      formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+      return formatted;
     },
     getWeatherIcon(iconCode) {
       // Пример: "01d" → https://openweathermap.org/img/wn/01d@2x.png
@@ -72,6 +75,8 @@ export default {
   color: $gray_color;
   max-width: 220px;
   width: 100%;
+  height: 100%;
+  user-select: none;
 
   @include medium{
     max-width: 200px;
@@ -85,10 +90,6 @@ export default {
 .date {
   font-weight: 600;
   white-space: nowrap;
-
-  &::first-letter{
-    text-transform: uppercase;
-  }
 }
 
 .temp {

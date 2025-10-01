@@ -1,5 +1,5 @@
 <template>
-  <div class="main-block">
+  <div class="main-block" :style="{ backgroundImage }">
     <!-- Загрузка -->
     <div v-if="loading" class="loading-container">
       <div class="spinner"></div>
@@ -54,7 +54,7 @@
       </div>
 
       <div class="weather-footer">
-        <span>Данные обновлены автоматически</span>
+        <span>Больше информации - на странице с прогнозом</span>
       </div>
     </div>
   </div>
@@ -92,6 +92,12 @@ export default {
     formattedFeelTemp() {
       const temp = Math.round(this.currentWeather.main.feels_like);
       return temp >= 0 ? `+${temp}°C` : `${temp}°C`;
+    },
+    //для фона
+    backgroundImage() {
+      if (!this.currentWeather) return '';
+      const icon = this.currentWeather.weather[0].icon;
+      return `url('${this.getBackgroundImage(icon)}')`;
     }
   },
   methods: {
@@ -99,25 +105,59 @@ export default {
       // Пример: "01d" → https://openweathermap.org/img/wn/01d@2x.png
       return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
     },
+    getBackgroundImage(iconCode){
+      const weatherBackgroundMap = {
+        '01d': 'sunny.jpg',
+        '01n': 'clear-night.jpg',
+        '02d': 'few-clouds.jpg',
+        '02n': 'few-clouds-night.jpg',
+        '03d': 'cloudy.jpg',
+        '03n': 'cloudy-night.jpg',
+        '04d': 'broken-clouds.jpg',
+        '04n': 'broken-clouds.jpg',
+        '09d': 'shower-rain.jpg',
+        '09n': 'shower-rain-night.jpg',
+        '10d': 'rain.jpg',
+        '10n': 'rain-night.jpg',
+        '11d': 'thunderstorm.jpg',
+        '11n': 'thunderstorm-night.jpg',
+        '13d': 'snow.jpg',
+        '13n': 'snow.jpg',
+        '50d': 'mist.jpg',
+        '50n': 'mist.jpg'
+      };
+
+      const fileName = weatherBackgroundMap[iconCode] || 'default.jpg';
+      return `/weather-backgrounds/${fileName}`; // путь к фону
+    }
   },
   watch: {
-    currentWeather(newValue) {
-      console.log("Обновлена погода:", newValue);
-    },
-  },
+    currentWeather(newValue){
+      console.log(newValue)
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
+:deep(.block-wrap) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .main-block {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  padding: 32px;
+  flex-grow: 1;
+  padding: 44px;
   border-radius: 10px;
-  background: url("/public/autumn.png") center center / cover no-repeat;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-image 0.5s ease-in-out;
+  font-family: "Alan Sans", sans-serif;
 }
 
 /* Загрузка */
@@ -181,19 +221,40 @@ export default {
     margin-bottom: 20px;
     flex-wrap: wrap;
 
+    @include medium{
+      margin-bottom: 18px;
+    }
+
+    @include small{
+      margin-bottom: 16px;
+    }
+
     .city-name {
-      font-size: 2rem;
+      font-size: 36px;
       font-weight: 700;
       color: $gray_color;
       margin: 0;
       flex: 1;
       text-align: left;
+
+      @include medium{
+        font-size: 32px;
+      }
+
+      @include small{
+        font-size: 28px;
+      }
     }
 
     .weather-icon img {
       width: 80px;
       height: 80px;
       filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+
+      @include small{
+        width: 72px;
+        height: 72px;
+      }
     }
   }
 
@@ -203,13 +264,29 @@ export default {
     flex-direction: column;
     gap: 10px 0;
 
+    @include medium{
+      margin-bottom: 18px;
+    }
+
+    @include small{
+      margin-bottom: 16px;
+    }
+
     .temp-value {
       font-size: 54px;
-      font-weight: 800;
+      font-weight: 600;
       background: linear-gradient(to right, #e74c3c, #c0392b);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       line-height: 1;
+
+      @include medium{
+        font-size: 48px;
+      }
+
+      @include small{
+        font-size: 42px;
+      }
     }
 
     .feels-like {
@@ -229,6 +306,11 @@ export default {
       padding: 14px 0;
       border-bottom: 1px solid #ecf0f1;
 
+      @include x-small{
+        flex-direction: column;
+        align-items: center;
+      }
+
       &:last-child {
         border-bottom: none;
       }
@@ -237,6 +319,11 @@ export default {
         font-weight: 600;
         color: #34495e;
         font-size: 18px;
+        line-height: 110%;
+
+        @include small{
+          font-size: 22px;
+        }
       }
 
       .value {

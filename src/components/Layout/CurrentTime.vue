@@ -57,6 +57,7 @@ export default {
 
 <style lang="scss" scoped>
 .current-time-wrap {
+  margin: 0 auto;
   padding: 12px 16px;
   border-radius: 12px;
   background-color: rgba(240, 242, 245, 0.7); /* Полупрозрачный светлый фон */
@@ -64,7 +65,8 @@ export default {
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   display: inline-block;
-  max-width: 100%;
+  max-width: 350px;
+  width: 100%;
   text-align: center;
   transition: 0.2s;
 

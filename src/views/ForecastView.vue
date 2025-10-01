@@ -27,7 +27,7 @@
             </Slide>
             <template #addons>
               <Navigation />
-              <Pagination class="additional-pagination-class" />
+              <Pagination class="addition-pagination" />
             </template>
           </Carousel>
         </div>
@@ -65,30 +65,6 @@ export default {
           itemsToShow: 'auto',
           snapAlign: 'start'
         }
-        // 380: {
-        //   itemsToShow: 2,
-        //   snapAlign: 'start'
-        // },
-        // 576: {
-        //   itemsToShow: 3,
-        //   snapAlign: 'start'
-        // },
-        // 768: {
-        //   itemsToShow: '4',
-        //   snapAlign: 'start'
-        // },
-        // 1024: {
-        //   itemsToShow: 5,
-        //   snapAlign: 'start'
-        // },
-        // 1200: {
-        //   itemsToShow: 6,
-        //   snapAlign: 'start'
-        // },
-        // 1600: {
-        //   itemsToShow: 7,
-        //   snapAlign: 'start'
-        // },
       }
     }
   },
@@ -137,14 +113,31 @@ export default {
     }
   }
 
-  .additional-pagination-class{
-    bottom: 0;
-  }
   //глубокий селектор - чотбы пробросить стили вглубль дочернего компонента
   :deep(.carousel__prev),
   :deep(.carousel__next) {
     background: #bfaeae;
     border-radius: 50%;
+  }
+
+  :deep(.carousel__pagination-button){
+    height: 7px;
+    width: 20px;
+    border-radius: 3px;
+  }
+
+  :deep(.carousel__pagination){
+    bottom: 0;
+  }
+
+  :deep(.carousel__viewport){
+    padding: 0 0 20px 0;
+  }
+
+  :deep(.carousel__pagination){
+    flex-wrap: wrap;
+    width: 100%;
+    bottom: 0;
   }
 
   /* Загрузка */
@@ -168,6 +161,14 @@ export default {
 
     @keyframes spin {
       to { transform: rotate(360deg); }
+    }
+  }
+
+  .addition-pagination{
+    display: flex;
+
+    @media (max-width: 768px){
+      display: none;
     }
   }
 </style>

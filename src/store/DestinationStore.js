@@ -168,7 +168,6 @@ export const useDestinationStore = defineStore(
                     .then(data => {
                             this.listForecasts = data;
                             this.lastForecastFetchedAt = Date.now();
-                            console.log(this.listForecasts)
                         }
                     )
                     .catch(err => {
