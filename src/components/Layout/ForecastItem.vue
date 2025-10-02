@@ -28,11 +28,11 @@ export default {
     //добавление знака (+), если больше 0, так как API не выводит с +, если положительная температура
     formattedTemp() {
       const temp = Math.round(this.forecast.main.temp);
-      return temp >= 0 ? `+${temp}°C` : `${temp}°C`;
+      return temp > 0 ? `+${temp}°C` : `${temp}°C`;
     },
     formattedFeelTemp() {
       const temp = Math.round(this.forecast.main.feels_like);
-      return temp >= 0 ? `+${temp}°C` : `${temp}°C`;
+      return temp > 0 ? `+${temp}°C` : `${temp}°C`;
     }
   },
   methods: {
