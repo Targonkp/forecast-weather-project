@@ -1,29 +1,19 @@
 <template>
-  <Header/>
-  <Main>
     <div class="forecasts-list-wrap">
       <div v-if="listForecasts && listForecasts.length" class="forecasts-list-wrap">
         <h1 class="forecasts-header">Прогноз погоды на 5 дней - {{cityName}}</h1>
         <div class="forecasts-list">
-          <Carousel
-              :wrap-around="false"
-              breakpointMode="carousel"
-              snap-align="center"
-              :breakpoints="breakpoints"
-              :transition="350"
-              :mouse-wheel="true"
-              :gap="20"
-              class="forecasts-carousel"
-              :i18n="{
-              ariaNextSlide: 'К следующему слайду',
-              ariaPreviousSlide: 'К предыдущему слайду'
-              }"
-          >
+          <Carousel v-bind="carouselConfig">
             <Slide
                 v-for="forecast in listForecasts"
-                :key="forecast.date"
+                :key="forecast.dt"
             >
+              <router-link
+                 class="additional-router-class"
+                :to="{name: 'Forecast.show', params:{slug:slugForecast(forecast.dt_txt)}}"
+              >
               <forecast-item :forecast="forecast"/>
+              </router-link>
             </Slide>
             <template #addons>
               <Navigation />
@@ -38,8 +28,6 @@
       </div>
       <div v-else class="no-data">Нет данных о погоде</div>
     </div>
-  </Main>
-  <Footer/>
 </template>
 
 <script>
@@ -53,19 +41,36 @@ import 'vue3-carousel/dist/carousel.css';
 
 export default {
   name: 'Forecast',
-  components: {ForecastItem, Footer, Header, Main, Carousel, Slide, Navigation, Pagination},
+  components: {ForecastItem, Carousel, Slide, Navigation, Pagination},
   data(){
     return {
-      breakpoints: {
-        0:{
-          itemsToShow: 'auto',
-          snapAlign: 'center'
+      carouselConfig: {
+        breakpointMode: 'carousel',
+        snapAlign: 'center',
+        breakpoints: {
+          0:{
+            itemsToShow: 'auto',
+            snapAlign: 'center'
+          },
+          480:{
+            itemsToShow: 'auto',
+            snapAlign: 'start'
+          }
         },
-        480:{
-          itemsToShow: 'auto',
-          snapAlign: 'start'
+        transition: 350,
+        mouseWheel: true,
+        gap: 20,
+        i18n: {
+          ariaNextSlide: 'К следующему слайду',
+          ariaPreviousSlide: 'К предыдущему слайду'
         }
       }
+    }
+  },
+  methods: {
+    slugForecast(item) {
+      const val = item.split(' ');
+      return val[0] + '-' + val[1];
     }
   },
   computed: {
@@ -80,12 +85,20 @@ export default {
     },
     listForecasts(){
       return this.destinationStore.listForecasts.list;
-    }
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+  .additional-router-class {
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+    display: block;
+    width: 220px;
+  }
+
   .forecasts-list-wrap{
     width: 100%;
     overflow: hidden;

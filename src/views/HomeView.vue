@@ -1,11 +1,7 @@
 <template>
-  <Header/>
-  <Main>
     <current-time/>
     <search-bar/>
     <city-show/>
-  </Main>
-  <Footer/>
 </template>
 
 <script>
@@ -20,7 +16,7 @@ import SearchBar from "@/components/Layout/SearchBar.vue";
 
 export default {
   name: 'HomeView',
-  components: {SearchBar, CurrentTime, CityShow, Footer, Header, Main},
+  components: {SearchBar, CurrentTime, CityShow},
 }
 </script>
 

@@ -1,11 +1,19 @@
 <template>
+  <Header/>
+  <Main>
   <router-view/>
+  </Main>
+  <Footer/>
 </template>
 
 <script >
 import { useDestinationStore } from '@/store/DestinationStore';
+import Header from "@/components/Common/Header.vue";
+import Main from "@/components/Common/Main.vue";
+import Footer from "@/components/Common/Footer.vue";
 export default {
   name: "App",
+  components: {Footer, Main, Header},
   async mounted() {
     const store = useDestinationStore();
     try{

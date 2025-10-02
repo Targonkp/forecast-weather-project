@@ -1,13 +1,9 @@
 <template>
-    <Header/>
-    <Main>
-        <div class="not-found">
+  <div class="not-found">
           <h1>404</h1>
           <p>Страница не найдена</p>
           <router-link to="/" class="btn">На главную</router-link>
         </div>
-    </Main>
-    <Footer/>
 </template>
 
 <script>
@@ -17,8 +13,6 @@ import Main from "@/components/Common/Main.vue";
 
 export default {
   name: 'NotFound',
-  components: {Main, Footer, Header}
-
 }
 </script>
 

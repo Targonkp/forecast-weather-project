@@ -73,7 +73,6 @@ export default {
   margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   color: $gray_color;
-  max-width: 220px;
   width: 100%;
   height: 100%;
   user-select: none;

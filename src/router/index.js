@@ -12,16 +12,19 @@ const routes = [
     }
   },
   {
-    path: '/forecast',
+    path: '/forecast/',
     name: 'Forecast',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "forecast" */ '../views/ForecastView.vue'),
+    component: () => import(/* webpackChunkName: "forecast" */ '@/views/ForecastView.vue'),
     meta: {
       title: 'Прогноз погоды на 5 дней',
       description: 'Подробный прогноз погоды на ближайшие дни: температура, осадки, ветер и другие метеорологические данные.'
     }
+  },
+  {
+    path: '/forecast/:slug',
+    name: 'Forecast.show',
+    component: () => import( '@/components/Layout/ForecastPageItem.vue'),
+    props: true,
   },
   {
     path: '/:pathMatch(.*)*',
