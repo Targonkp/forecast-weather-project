@@ -15,7 +15,7 @@
     <!-- Данные погоды -->
     <div v-else-if="currentWeather" class="weather-card">
       <div class="weather-header">
-        <h1 class="city-name">{{ currentWeather.name }}, {{ currentWeather.sys.country }}</h1>
+        <h1 class="city-name">{{ currentWeather.name }}, {{ currentWeather.sys.country === 'UA' ? '' : currentWeather.sys.country }}</h1>
         <div class="weather-icon">
           <img :src="getWeatherIcon(currentWeather.weather[0].icon)" :alt="currentWeather.weather[0].description" />
         </div>

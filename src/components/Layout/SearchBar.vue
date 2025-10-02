@@ -25,7 +25,7 @@
           class="list-city__item"
           @click="handleCityClick(item)"
       >
-        {{ item.local_names?.ru || item.name }}  ({{item.country}}{{item.state ? ` - ${item.state}` : ''}})
+        {{ item.local_names?.ru || item.name }}  ({{item.country === 'UA' ? '()' : item.country}}{{item.state ? ` - ${item.state}` : ''}})
       </div>
 <!--        Если город не найден - массив после запроса пустой-->
         <div
