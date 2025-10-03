@@ -1,5 +1,9 @@
 <template>
-  <block-wrap v-if="forecast">
+  <div class="forecast-card-wrap" v-if="!listForecasts.length">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="forecast-card-wrap" v-else-if="forecast">
     <div class="forecast-card">
       <h2 class="forecast-date">{{ formatDate(forecast.dt_txt) }}</h2>
 
@@ -14,12 +18,12 @@
       <ul class="forecast-details">
         <li>
           <span>Температура:</span>
-          {{Math.round(forecast.main.temp) }}°C
-          <small>(ощущается как {{Math.round(forecast.main.feels_like)}}°C)</small>
+          {{ Math.round(forecast.main.temp) }}°C
+          <small>(ощущается как {{ Math.round(forecast.main.feels_like) }}°C)</small>
         </li>
         <li>
           <span>Ветер:</span>
-          {{ forecast.wind.speed }} м/с, {{ windDirection(forecast.wind.deg) }}
+          {{ Math.round(forecast.wind.speed) }} м/с, {{ windDirection(forecast.wind.deg) }}
         </li>
         <li>
           <span>Влажность:</span>
@@ -35,11 +39,11 @@
         </li>
       </ul>
     </div>
-  </block-wrap>
+  </div>
 
-  <block-wrap v-else>
+  <div class="forecast-card-wrap" v-else>
     <p>Прогноз не найден.</p>
-  </block-wrap>
+  </div>
 </template>
 
 <script>
@@ -57,11 +61,11 @@ export default {
       return useDestinationStore();
     },
     listForecasts() {
-      return this.destinationStore.listForecasts.list;
+      return this.destinationStore.listForecasts?.list || [];
     },
     forecast() {
       if (!this.listForecasts || this.listForecasts.length === 0) {
-        return null
+        return null;
       }
       const dtTxt = this.slugToDtTxt(this.slug);
       return this.listForecasts.find(elem => elem.dt_txt === dtTxt);
@@ -83,7 +87,16 @@ export default {
       return new Date(dateStr).toLocaleDateString('ru-RU', options);
     },
     windDirection(deg) {
-      const dirs = ['северный', 'северо-восточный', 'восточный', 'юго-восточный', 'южный', 'юго-западный', 'западный', 'северо-западный'];
+      const dirs = [
+        'северный',
+        'северо-восточный',
+        'восточный',
+        'юго-восточный',
+        'южный',
+        'юго-западный',
+        'западный',
+        'северо-западный'
+      ];
       const index = Math.round(deg / 45) % 8;
       return dirs[index];
     },
@@ -96,10 +109,17 @@ export default {
   }
 };
 </script>
+
 <style lang="scss" scoped>
+.forecast-card-wrap{
+  margin: 10px 20px;
+  box-sizing: border-box;
+}
+
 .forecast-card {
   background-color: $white_color;
   border-radius: 12px;
+  box-sizing: border-box;
   padding: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   color: $gray_color;
@@ -112,7 +132,7 @@ export default {
     font-size: 20px;
     margin-bottom: 15px;
 
-    &::first-letter{
+    &::first-letter {
       text-transform: uppercase;
     }
   }
@@ -157,5 +177,20 @@ export default {
       }
     }
   }
+}
+
+.spinner {
+  margin: 50px auto;
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid $main_color;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>

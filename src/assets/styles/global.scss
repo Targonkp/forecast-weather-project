@@ -17,3 +17,39 @@ body{
   min-width: 300px;
   width: 100%;
 }
+
+h1{
+  font-size: 42px;
+  line-height: 120%;
+  margin: 14px 0;
+
+  @include large{
+    font-size: 40px;
+  }
+
+  @include medium{
+    font-size: 36px;
+  }
+
+  @include small{
+    font-size: 32px;
+  }
+}
+
+h2{
+  font-size: 36px;
+  line-height: 120%;
+  margin: 10px 0;
+
+  @include large{
+    font-size: 34px;
+  }
+
+  @include medium{
+    font-size: 30px;
+  }
+
+  @include small{
+    font-size: 28px;
+  }
+}

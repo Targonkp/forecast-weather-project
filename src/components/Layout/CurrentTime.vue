@@ -59,6 +59,7 @@ export default {
 .current-time-wrap {
   margin: 0 auto;
   padding: 12px 16px;
+  box-sizing: border-box;
   border-radius: 12px;
   background-color: rgba(240, 242, 245, 0.7); /* Полупрозрачный светлый фон */
   backdrop-filter: blur(8px); /* Мягкое размытие */

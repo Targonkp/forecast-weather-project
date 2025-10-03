@@ -3,7 +3,7 @@
       <div v-if="listForecasts && listForecasts.length" class="forecasts-list-wrap">
         <h1 class="forecasts-header">Прогноз погоды на 5 дней - {{cityName}}</h1>
         <div class="forecasts-list">
-          <Carousel v-bind="carouselConfig">
+          <Carousel aria-label="Карусель с прогнозом на 5 дней - каждые 3 часа" v-bind="carouselConfig">
             <Slide
                 v-for="forecast in listForecasts"
                 :key="forecast.dt"
@@ -12,7 +12,7 @@
                  class="additional-router-class"
                 :to="{name: 'Forecast.show', params:{slug:slugForecast(forecast.dt_txt)}}"
               >
-              <forecast-item :forecast="forecast"/>
+                <forecast-slide-item :forecast="forecast"/>
               </router-link>
             </Slide>
             <template #addons>
@@ -27,21 +27,23 @@
         <p>Загружаем данные о погоде...</p>
       </div>
       <div v-else class="no-data">Нет данных о погоде</div>
+      <chart aria-label="Отображение подробного прогноза в виде графика" />
     </div>
+
 </template>
 
 <script>
-import Header from "@/components/Common/Header.vue";
-import Footer from "@/components/Common/Footer.vue";
-import Main from "@/components/Common/Main.vue";
 import { useDestinationStore } from "@/store/DestinationStore";
-import ForecastItem from "@/components/Layout/ForecastItem.vue";
+import ForecastSlideItem from "@/components/Layout/ForecastSlideItem.vue";
 import { Carousel, Slide, Navigation, Pagination } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
+import ChartBar from "@/components/Layout/ChartBar.vue";
 
 export default {
   name: 'Forecast',
-  components: {ForecastItem, Carousel, Slide, Navigation, Pagination},
+  components: {
+    ForecastSlideItem,
+    Chart: ChartBar, ForecastItem: ForecastSlideItem, Carousel, Slide, Navigation, Pagination},
   data(){
     return {
       carouselConfig: {
@@ -97,6 +99,25 @@ export default {
     height: 100%;
     display: block;
     width: 220px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover{
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    @include medium{
+      max-width: 200px;
+    }
+
+    @include small{
+      max-width: 180px;
+
+      &:hover{
+        opacity: 1;
+      }
+    }
   }
 
   .forecasts-list-wrap{
@@ -104,26 +125,8 @@ export default {
     overflow: hidden;
   }
 
-  .forecasts-list{
-    cursor: pointer;
-  }
-
   .forecasts-header{
-    font-size: 42px;
-    line-height: 120%;
-    margin: 8px 0 14px 0;
-
-    @include large{
-      font-size: 40px;
-    }
-
-    @include medium{
-      font-size: 36px;
-    }
-
-    @include small{
-      font-size: 32px;
-    }
+    margin: 14px 0;
   }
 
   //глубокий селектор - чотбы пробросить стили вглубль дочернего компонента
@@ -144,7 +147,7 @@ export default {
   }
 
   :deep(.carousel__viewport){
-    padding: 0 0 20px 0;
+    padding: 0 0 28px 0;
   }
 
   :deep(.carousel__pagination){

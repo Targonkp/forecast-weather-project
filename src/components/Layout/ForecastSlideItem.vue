@@ -17,7 +17,7 @@
 
 <script>
 export default {
-  name: 'ForecastItem',
+  name: 'ForecastSlideItem',
   props: {
     forecast: {
       type: Object,
@@ -76,14 +76,6 @@ export default {
   width: 100%;
   height: 100%;
   user-select: none;
-
-  @include medium{
-    max-width: 200px;
-  }
-
-  @include small{
-    max-width: 180px;
-  }
 }
 
 .date {
