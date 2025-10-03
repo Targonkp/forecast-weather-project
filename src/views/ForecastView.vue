@@ -34,10 +34,10 @@
 
 <script>
 import { useDestinationStore } from "@/store/DestinationStore";
-import ForecastSlideItem from "@/components/Layout/ForecastSlideItem.vue";
+import ForecastSlideItem from "@/components/Features/ForecastSlideItem.vue";
 import { Carousel, Slide, Navigation, Pagination } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
-import ChartBar from "@/components/Layout/ChartBar.vue";
+import ChartBar from "@/components/Features/ChartBar.vue";
 
 export default {
   name: 'Forecast',

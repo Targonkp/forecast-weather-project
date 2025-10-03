@@ -23,7 +23,7 @@ const routes = [
   {
     path: '/forecast/:slug',
     name: 'Forecast.show',
-    component: () => import( '@/components/Layout/ForecastPageItem.vue'),
+    component: () => import( '@/components/Features/ForecastPageItem.vue'),
     props: true,
   },
   {
