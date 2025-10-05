@@ -6,12 +6,14 @@
   <Footer/>
 </template>
 
-<script >
+<script lang="ts">
+import { defineComponent } from 'vue'
 import { useDestinationStore } from '@/store/DestinationStore';
 import Header from "@/components/Common/Header.vue";
 import Main from "@/components/Common/Main.vue";
 import Footer from "@/components/Common/Footer.vue";
-export default {
+export default defineComponent
+({
   name: "App",
   components: {Footer, Main, Header},
   async mounted() {
@@ -20,7 +22,7 @@ export default {
       await store.fetchGeoData();
       await store.fetchWeatherForecast();
     }
-    catch (error) {
+    catch (error: unknown) {
       console.error('Ошибка загрузки данных', error);
     }
 
@@ -31,7 +33,7 @@ export default {
       console.log('Прогноз обновлен')
     }, 30 * 60 * 1000);
   }
-}
+})
 
 </script>
 

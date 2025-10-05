@@ -40,16 +40,16 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   //обновление title
-  document.title = to.meta.title || 'Прогноз погоды';
+  document.title = (to.meta.title as string) || 'Прогноз погоды';
   //обновление или создаение meta description
-  let metaDescription = document.querySelector('meta[name="description"]');
+  let metaDescription = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
   if (!metaDescription) {
-    metaDescription = document.createElement('meta');
+    metaDescription = document.createElement('meta') as HTMLMetaElement;
     metaDescription.name = 'description';
     document.head.appendChild(metaDescription);
   }
   // устанавка содержимого
-  metaDescription.content = to.meta.description || 'Актуальная погода и прогнозы.';
+  metaDescription.content = (to.meta.description as string) || 'Актуальная погода и прогнозы.';
   next();
 })
 

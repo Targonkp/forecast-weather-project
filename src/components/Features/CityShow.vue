@@ -63,7 +63,7 @@
 <script>
 import { useDestinationStore } from "@/store/DestinationStore";
 //подгружаю картинку из отдельного файла, куда они импортированы из assets
-import { backgroundMap, defaultBg } from '@/assets/backgroundMap.js';
+import { backgroundMap, defaultBg } from '@/assets/backgroundMap.ts';
 
 export default {
   name: "CityShow",

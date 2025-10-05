@@ -41,63 +41,68 @@
   </div>
 </template>
 
-<script>
-import {useDestinationStore} from "@/store/DestinationStore";
+<script lang="ts">
+import {useDestinationStore, Location} from "@/store/DestinationStore";
+import { defineComponent } from 'vue';
 
-export default {
-  name: 'SearchBar',
-  data(){
-    return {
-      searchQuery: "",
-      hasSearched: false
+export default defineComponent(
+    {
+      name: 'SearchBar',
+      data(){
+        return {
+          searchQuery: "",
+          hasSearched: false
+        }
+      },
+      computed: {
+        useDestinationStore(){
+          return useDestinationStore()
+        },
+        listOfGeolocation(): Location[]{
+          return this.useDestinationStore.listLocations;
+        },
+        loading(): boolean{
+          return this.useDestinationStore.loading
+        },
+        error(): any {
+          return this.useDestinationStore.error
+        },
+        showNotFoundMessage(): boolean {
+          return (
+              this.hasSearched && this.listOfGeolocation.length === 0
+          );
+        }
+      },
+      methods: {
+        onSearchInput() {
+          // если поле не пустое — hasSearched остается как есть
+          // если пользователь удаляет всё — сбрасываю hasSearched
+          if (this.searchQuery.trim() === '') {
+            this.useDestinationStore.listLocations = [];
+            this.hasSearched = false;
+          }
+        },
+        async searchWeather(){
+          const city = this.searchQuery.trim();
+          if (city) {
+            //получаю длину массива и в зависимости от результата настраиваю показ сообщения "Город не найден"
+            await this.useDestinationStore.fetchGetLocations(city);
+            this.listOfGeolocation.length > 0 ? this.hasSearched = false : this.hasSearched = true;
+          }
+        },
+        handleCityClick(item: Location) {
+          const city_name = item.local_names?.ru || item.name;
+          const country_name = item.country;
+          useDestinationStore().fetchFindCityWeather(city_name, country_name);
+          this.searchQuery = '' // очистка поля  после отправки
+          useDestinationStore().listLocations = [] //очистка списка после выбора города
+          this.hasSearched = false;
+        },
+      },
     }
-  },
-  computed: {
-    useDestinationStore(){
-      return useDestinationStore()
-    },
-    listOfGeolocation(){
-      return this.useDestinationStore.listLocations;
-    },
-    loading(){
-      return useDestinationStore().loading
-    },
-    error(){
-      return useDestinationStore().error
-    },
-    showNotFoundMessage() {
-      return (
-          this.hasSearched && this.listOfGeolocation.length === 0
-      );
-    }
-  },
-  methods: {
-    onSearchInput() {
-      // если поле не пустое — hasSearched остается как есть
-      // если пользователь удаляет всё — сбрасываю hasSearched
-      if (this.searchQuery.trim() === '') {
-        useDestinationStore().listLocations = [];
-        this.hasSearched = false;
-      }
-    },
-   async searchWeather(){
-      const city = this.searchQuery.trim();
-      if (city) {
-        //получаю длину массива и в зависимости от результата настраиваю показ сообщения "Город не найден"
-        await useDestinationStore().fetchGetLocations(city);
-        this.listOfGeolocation.length > 0 ? this.hasSearched = false : this.hasSearched = true;
-      }
-    },
-    handleCityClick(item) {
-      const city_name = item.local_names?.ru || item.name;
-      const country_name = item.country;
-      useDestinationStore().fetchFindCityWeather(city_name, country_name);
-      this.searchQuery = '' // очистка поля  после отправки
-      useDestinationStore().listLocations = [] //очистка списка после выбора города
-      this.hasSearched = false;
-    },
-  },
-}
+)
+
+
 </script>
 
 <style lang="scss" scoped>

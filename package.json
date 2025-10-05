@@ -5,9 +5,9 @@
   "scripts": {
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
-    "serve-dist": "npx serve -s dist",
     "deploy": "gh-pages -d dist",
-    "build-deploy": "npm run build && npm run deploy"
+    "build-deploy": "npm run build && npm run deploy",
+    "serve-dist": "npx serve -s dist"
   },
   "dependencies": {
     "chart.js": "^4.5.0",
@@ -21,11 +21,13 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
+    "@vue/cli-plugin-typescript": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
     "gh-pages": "^6.3.0",
     "sass": "^1.32.7",
     "sass-loader": "^12.0.0",
-    "serve": "^14.2.5"
+    "serve": "^14.2.5",
+    "typescript": "~4.5.5"
   },
   "browserslist": [
     "> 1%",
