@@ -1,35 +1,17 @@
 import { defineStore } from "pinia";
-import {
-    getLocations,
-    getIp,
-    getGeoByIp,
-    getCurrentWeather,
-    getForecastWeather
-} from "@/api/weatherApi";
+
+import { getCurrentWeather } from "@/api/current_weather.api";
+import { getIp } from "@/api/ip.api";
+import { getGeoByIp } from "@/api/geo_ip.api";
+import { getForecastWeather } from "@/api/forecast_weather.api";
+import { getLocations } from "@/api/locations.api";
+
+import { Location } from "@/types/location.types";
+import { DestinationState} from "@/types/destination.types";
 
 const CACHE_DURATION_MINUTES = 10;
 
-export interface Location {
-    name: string;
-    country: string;
-    state?: string;
-    local_names?: {
-        [key: string]: string;
-    },
-}
 
-interface DestinationState {
-    ip: string | null;
-    city: string | null;
-    country: string | null;
-    error: string | null;
-    loading: boolean;
-    currentWeather: Record<string, any> | null;
-    lastGeoDataFetchedAt: number | null;
-    lastForecastFetchedAt: number | null;
-    listLocations: Location[];
-    listForecasts: Record<string, any> | null;
-}
 
 export const useDestinationStore = defineStore("DestinationStore", {
     state: (): DestinationState => ({
@@ -42,7 +24,7 @@ export const useDestinationStore = defineStore("DestinationStore", {
         lastGeoDataFetchedAt: null,
         lastForecastFetchedAt: null,
         listLocations: [],
-        listForecasts: {},
+        listForecasts: null,
     }),
 
     actions: {
@@ -167,7 +149,7 @@ export const useDestinationStore = defineStore("DestinationStore", {
                     this.error = "Город или страна не заданы";
                     return;
                 }
-                this.listForecasts = await getForecastWeather(this.city, this.country);
+                this.listForecasts = await getForecastWeather(this.city, this.country);;
                 this.lastForecastFetchedAt = Date.now();
             } catch (err: any) {
                 console.error("Failed to forecast:", err);
@@ -181,3 +163,5 @@ export const useDestinationStore = defineStore("DestinationStore", {
         }
     }
 });
+
+export type DestinationStoreType = ReturnType<typeof useDestinationStore>;

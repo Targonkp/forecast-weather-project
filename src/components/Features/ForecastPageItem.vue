@@ -35,7 +35,7 @@
         </li>
         <li>
           <span>Облачность:</span>
-          {{ forecast.clouds.all }}%
+          {{ forecast.clouds?.all }}%
         </li>
       </ul>
     </div>
@@ -46,68 +46,76 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import BlockWrap from "@/components/Common/BlockWrap.vue";
-import { useDestinationStore } from "@/store/DestinationStore";
+import {type DestinationStoreType, useDestinationStore} from "@/store/DestinationStore";
+import { defineComponent } from 'vue';
+import {ForecastListItem} from "@/types/forecast.type";
 
-export default {
-  name: "ForecastPageItem",
-  components: { BlockWrap },
-  props: {
-    slug: { type: String, required: true }
-  },
-  computed: {
-    destinationStore() {
-      return useDestinationStore();
-    },
-    listForecasts() {
-      return this.destinationStore.listForecasts?.list || [];
-    },
-    forecast() {
-      if (!this.listForecasts || this.listForecasts.length === 0) {
-        return null;
+export default defineComponent(
+    {
+      name: "ForecastPageItem",
+      components: { BlockWrap },
+      props: {
+        slug: { type: String, required: true }
+      },
+      computed: {
+        destinationStore(): DestinationStoreType {
+          return useDestinationStore();
+        },
+        listForecasts(): ForecastListItem[] | null {
+          return this.destinationStore.listForecasts?.list || [];
+        },
+        forecast(): ForecastListItem | null {
+          if (!this.listForecasts || this.listForecasts.length === 0) {
+            return null;
+          }
+          const dtTxt:string = this.slugToDtTxt(this.slug);
+          return this.listForecasts.find(elem => elem.dt_txt === dtTxt) || null;
+        },
+      },
+      methods: {
+        slugToDtTxt(slug: string): string {
+          return slug.slice(0, 10) + ' ' + slug.slice(11);
+        },
+        formatDate(dateStr: string) : string {
+          const options: Intl.DateTimeFormatOptions = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          };
+          return new Date(dateStr).toLocaleDateString('ru-RU', options);
+        },
+        windDirection(deg: number): string {
+          const dirs = [
+            'северный',
+            'северо-восточный',
+            'восточный',
+            'юго-восточный',
+            'южный',
+            'юго-западный',
+            'западный',
+            'северо-западный'
+          ];
+          const index = Math.round(deg / 45) % 8;
+          return dirs[index];
+        },
+        pressureMmHg(hPa: number): number {
+          return Math.round(hPa * 0.75006);
+        },
+        weatherIconUrl(iconCode: string): string {
+          return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+        }
+      },
+      mounted() {
+        document.title = `Прогноз погоды на 5 дней — ${this.slug}`;
       }
-      const dtTxt = this.slugToDtTxt(this.slug);
-      return this.listForecasts.find(elem => elem.dt_txt === dtTxt);
     }
-  },
-  methods: {
-    slugToDtTxt(slug) {
-      return slug.slice(0, 10) + ' ' + slug.slice(11);
-    },
-    formatDate(dateStr) {
-      const options = {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      };
-      return new Date(dateStr).toLocaleDateString('ru-RU', options);
-    },
-    windDirection(deg) {
-      const dirs = [
-        'северный',
-        'северо-восточный',
-        'восточный',
-        'юго-восточный',
-        'южный',
-        'юго-западный',
-        'западный',
-        'северо-западный'
-      ];
-      const index = Math.round(deg / 45) % 8;
-      return dirs[index];
-    },
-    pressureMmHg(hPa) {
-      return Math.round(hPa * 0.75006);
-    },
-    weatherIconUrl(iconCode) {
-      return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-    }
-  }
-};
+)
+
 </script>
 
 <style lang="scss" scoped>

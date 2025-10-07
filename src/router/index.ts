@@ -24,6 +24,10 @@ const routes = [
     path: '/forecast/:slug',
     name: 'Forecast.show',
     component: () => import( '@/components/Features/ForecastPageItem.vue'),
+    meta: {
+      title: 'Прогноз погоды',
+      description: 'Подробный прогноз погоды на ближайшие дни: температура, осадки, ветер и другие метеорологические данные.'
+    },
     props: true,
   },
   {

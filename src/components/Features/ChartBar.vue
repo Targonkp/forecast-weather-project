@@ -1,8 +1,10 @@
 <template>
-  <div class="chart-scroll-wrapper">
+  <div class="chart-container">
     <h2 class="chart-header">Температура в виде графика</h2>
-    <div class="chart-wrap">
-      <Bar :data="chartData" :options="options" />
+    <div class="chart-scroll-wrapper">
+      <div class="chart-wrap">
+        <Bar :data="chartData" :options="options" />
+      </div>
     </div>
   </div>
 </template>
@@ -96,8 +98,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.chart-container{
+  margin: 12px 0 8px 0;
+}
+
 .chart-scroll-wrapper {
-  margin: 30px 0 20px 0;
+  margin: 20px 0;
   overflow-x: auto;
   width: 100%;
 }

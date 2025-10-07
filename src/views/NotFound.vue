@@ -7,10 +7,6 @@
 </template>
 
 <script>
-import Header from "@/components/Common/Header.vue";
-import Footer from "@/components/Common/Footer.vue";
-import Main from "@/components/Common/Main.vue";
-
 export default {
   name: 'NotFound',
 }

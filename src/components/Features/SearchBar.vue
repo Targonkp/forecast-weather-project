@@ -42,7 +42,8 @@
 </template>
 
 <script lang="ts">
-import {useDestinationStore, Location} from "@/store/DestinationStore";
+import {type DestinationStoreType, useDestinationStore} from "@/store/DestinationStore";
+import {Location} from "@/types/location.types";
 import { defineComponent } from 'vue';
 
 export default defineComponent(
@@ -55,8 +56,8 @@ export default defineComponent(
         }
       },
       computed: {
-        useDestinationStore(){
-          return useDestinationStore()
+        useDestinationStore(): DestinationStoreType {
+          return useDestinationStore();
         },
         listOfGeolocation(): Location[]{
           return this.useDestinationStore.listLocations;
