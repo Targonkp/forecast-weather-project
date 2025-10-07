@@ -15,7 +15,7 @@
     <!-- Данные погоды -->
     <div v-else-if="currentWeather" class="weather-card">
       <div class="weather-header">
-        <h1 class="city-name">{{ currentWeather.name }}, {{ currentWeather.sys.country === 'UA' ? '' : currentWeather.sys.country }}</h1>
+        <h1 class="city-name">{{ city }}, {{ country === 'UA' ? '' : country }}</h1>
         <div class="weather-icon">
           <img :src="getWeatherIcon(currentWeather.weather[0].icon)" :alt="currentWeather.weather[0].description" />
         </div>
@@ -60,64 +60,69 @@
   </div>
 </template>
 
-<script>
-import { useDestinationStore } from "@/store/DestinationStore";
+<script lang="ts">
+import {type DestinationStoreType, useDestinationStore } from "@/store/DestinationStore";
 //подгружаю картинку из отдельного файла, куда они импортированы из assets
-import { backgroundMap, defaultBg } from '@/assets/backgroundMap.ts';
+import { backgroundMap, defaultBg } from '@/assets/backgroundMap';
+import { defineComponent } from 'vue';
+import {Weather} from "@/types/weather.type";
 
-export default {
-  name: "CityShow",
-  data() {
-    return {
-      showBackground: false,
+export default defineComponent(
+    {
+      name: "CityShow",
+      data() {
+        return {
+          showBackground: false,
+        }
+      },
+      computed: {
+        destinationStore(): DestinationStoreType {
+          return useDestinationStore();
+        },
+        loading(): boolean {
+          return this.destinationStore.loading;
+        },
+        city(): string | null {
+          return this.destinationStore.city;
+        },
+        error(): string | null {
+          return this.destinationStore.error;
+        },
+        country(): string | null {
+          return this.destinationStore.country;
+        },
+        currentWeather(): Weather | null {
+          return this.destinationStore.currentWeather;
+        },
+        //добавление знака (+), если больше 0, так как API не выводит с +, если положительная температура
+        formattedTemp(): string | null {
+          if (!this.currentWeather) return null;
+          const temp = Math.round(this.currentWeather.main.temp);
+          return temp > 0 ? `+${temp}°C` : `${temp}°C`;
+        },
+        formattedFeelTemp(): string | null {
+          if (!this.currentWeather) return null;
+          const temp = Math.round(this.currentWeather.main.feels_like);
+          return temp > 0 ? `+${temp}°C` : `${temp}°C`;
+        },
+        //для фона
+        backgroundImage(): string {
+          if (!this.currentWeather) return '';
+          const icon = this.currentWeather.weather[0].icon;
+          return `url('${this.getBackgroundImage(icon)}')`;
+        }
+      },
+      methods: {
+        getWeatherIcon(iconCode: string): string {
+          // Пример: "01d" → https://openweathermap.org/img/wn/01d@2x.png
+          return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+        },
+        getBackgroundImage(iconCode: string): string {
+          return backgroundMap[iconCode] || defaultBg;
+        }
+      },
     }
-  },
-  computed: {
-    destinationStore() {
-      return useDestinationStore();
-    },
-    loading() {
-      return this.destinationStore.loading;
-    },
-    city() {
-      return this.destinationStore.city;
-    },
-    error() {
-      return this.destinationStore.error;
-    },
-    country() {
-      return this.destinationStore.country;
-    },
-    currentWeather() {
-      return this.destinationStore.currentWeather;
-    },
-    //добавление знака (+), если больше 0, так как API не выводит с +, если положительная температура
-    formattedTemp() {
-      const temp = Math.round(this.currentWeather.main.temp);
-      return temp > 0 ? `+${temp}°C` : `${temp}°C`;
-    },
-    formattedFeelTemp() {
-      const temp = Math.round(this.currentWeather.main.feels_like);
-      return temp > 0 ? `+${temp}°C` : `${temp}°C`;
-    },
-    //для фона
-    backgroundImage() {
-      if (!this.currentWeather) return '';
-      const icon = this.currentWeather.weather[0].icon;
-      return `url('${this.getBackgroundImage(icon)}')`;
-    }
-  },
-  methods: {
-    getWeatherIcon(iconCode) {
-      // Пример: "01d" → https://openweathermap.org/img/wn/01d@2x.png
-      return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-    },
-    getBackgroundImage(iconCode){
-      return backgroundMap[iconCode] || defaultBg;
-
-    }
-  },
-};
+)
 </script>
 
 <style lang="scss" scoped>

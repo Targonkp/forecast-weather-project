@@ -1,5 +1,6 @@
 import {Location} from "@/types/location.types";
 import {ForecastWeatherData} from "@/types/forecast.type";
+import {Weather} from "@/types/weather.type";
 
 export interface DestinationState {
     ip: string | null;
@@ -7,7 +8,7 @@ export interface DestinationState {
     country: string | null;
     error: string | null;
     loading: boolean;
-    currentWeather: Record<string, any> | null;
+    currentWeather: Weather | null;
     lastGeoDataFetchedAt: number | null;
     lastForecastFetchedAt: number | null;
     listLocations: Location[];

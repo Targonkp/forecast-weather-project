@@ -7,7 +7,7 @@ import { getForecastWeather } from "@/api/forecast_weather.api";
 import { getLocations } from "@/api/locations.api";
 
 import { Location } from "@/types/location.types";
-import { DestinationState} from "@/types/destination.types";
+import { DestinationState} from "@/types/destination.type";
 
 const CACHE_DURATION_MINUTES = 10;
 
@@ -114,8 +114,8 @@ export const useDestinationStore = defineStore("DestinationStore", {
             this.lastForecastFetchedAt = null;
 
             try {
-                const weatherData: Record<string, any> = await getCurrentWeather(cityName, countryCode);
-                if (weatherData.cod === "404") throw new Error("Город не найден. Проверьте название");
+                const weatherData = await getCurrentWeather(cityName, countryCode);
+                if (weatherData.cod === 404) throw new Error("Город не найден. Проверьте название");
 
                 this.city = weatherData.name;
                 this.country = weatherData.sys.country;

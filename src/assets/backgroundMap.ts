@@ -15,7 +15,7 @@ import snow from '@/assets/weather-backgrounds/snow.jpg';
 import mist from '@/assets/weather-backgrounds/mist.jpg';
 import defaultBg from '@/assets/weather-backgrounds/default.jpg';
 
-const backgroundMap = {
+const backgroundMap: Record<string, string> = {
     '01d': sunny,
     '01n': clearNight,
     '02d': fewClouds,
