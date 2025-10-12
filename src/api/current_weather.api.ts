@@ -1,4 +1,4 @@
-import {Weather} from "@/types/weather.type";
+import {Weather} from "@/interfaces/weather";
 
 const apiKey = process.env.VUE_APP_OPENWEATHER_API_KEY;
 

@@ -6,8 +6,8 @@ import { getGeoByIp } from "@/api/geo_ip.api";
 import { getForecastWeather } from "@/api/forecast_weather.api";
 import { getLocations } from "@/api/locations.api";
 
-import { Location } from "@/types/location.types";
-import { DestinationState} from "@/types/destination.type";
+import { Location } from "@/interfaces/location";
+import { DestinationState} from "@/interfaces/destination";
 
 const CACHE_DURATION_MINUTES = 10;
 

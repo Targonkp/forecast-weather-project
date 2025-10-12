@@ -50,7 +50,7 @@
 import BlockWrap from "@/components/Common/BlockWrap.vue";
 import {type DestinationStoreType, useDestinationStore} from "@/store/DestinationStore";
 import { defineComponent } from 'vue';
-import {ForecastListItem} from "@/types/forecast.type";
+import {ForecastListItem} from "@/interfaces/forecast";
 
 export default defineComponent(
     {

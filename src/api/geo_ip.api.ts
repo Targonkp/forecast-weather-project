@@ -1,4 +1,4 @@
-import {GeoData} from "@/types/geodata.types";
+import {GeoData} from "@/interfaces/geodata";
 
 export async function getGeoByIp(ip: string): Promise<GeoData> {
     const response = await fetch(`https://ipwho.is/${ip}`);

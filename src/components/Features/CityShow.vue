@@ -65,7 +65,7 @@ import {type DestinationStoreType, useDestinationStore } from "@/store/Destinati
 //подгружаю картинку из отдельного файла, куда они импортированы из assets
 import { backgroundMap, defaultBg } from '@/assets/backgroundMap';
 import { defineComponent } from 'vue';
-import {Weather} from "@/types/weather.type";
+import {Weather} from "@/interfaces/weather";
 
 export default defineComponent(
     {
@@ -341,10 +341,9 @@ export default defineComponent(
   }
 }
 
-/* Адаптивность */
-@media (max-width: 600px) {
+@include small {
   .main-block {
-    padding: 16px;
+    padding: 28px 16px
   }
 
   .weather-card {
@@ -367,6 +366,16 @@ export default defineComponent(
   .weather-icon img {
     width: 60px;
     height: 60px;
+  }
+}
+
+@include x-small{
+  .main-block {
+    padding: 22px 14px
+  }
+
+  .weather-card {
+    padding: 22px;
   }
 }
 </style>

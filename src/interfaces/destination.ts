@@ -1,6 +1,6 @@
-import {Location} from "@/types/location.types";
-import {ForecastWeatherData} from "@/types/forecast.type";
-import {Weather} from "@/types/weather.type";
+import {Location} from "@/interfaces/location";
+import {ForecastWeatherData} from "@/interfaces/forecast";
+import {Weather} from "@/interfaces/weather";
 
 export interface DestinationState {
     ip: string | null;

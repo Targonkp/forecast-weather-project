@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import {type DestinationStoreType, useDestinationStore} from "@/store/DestinationStore";
-import {Location} from "@/types/location.types";
+import {Location} from "@/interfaces/location";
 import { defineComponent } from 'vue';
 
 export default defineComponent(
