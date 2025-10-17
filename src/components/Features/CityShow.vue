@@ -1,6 +1,6 @@
 <template>
   <div class="main-block" :style="{ backgroundImage }">
-  <!-- Загрузка -->
+    <!-- Загрузка -->
     <div v-if="loading" class="loading-container">
       <div class="spinner"></div>
       <p>Загружаем данные о погоде...</p>
@@ -14,19 +14,26 @@
 
     <!-- Данные погоды -->
     <div v-else-if="currentWeather" class="weather-card">
+      <div class="favorite-block">
+        <FavoriteToggle :id="cityId" :city="city" :country="country" />
+      </div>
       <div class="weather-header">
-        <h1 class="city-name">{{ city }}, {{ country === 'UA' ? '' : country }}</h1>
+        <h1 class="city-name">{{ city }}, {{ country === "UA" ? "" : country }}</h1>
         <div class="weather-icon">
-          <img :src="getWeatherIcon(currentWeather.weather[0].icon)" :alt="currentWeather.weather[0].description" />
+          <img
+            :src="getWeatherIcon(currentWeather.weather[0].icon)"
+            :alt="currentWeather.weather[0].description"
+          />
         </div>
       </div>
 
       <div class="temperature">
         <span class="temp-value">
-          {{formattedTemp}}
+          {{ formattedTemp }}
         </span>
-        <span class="feels-like">По ощущению:
-           {{formattedFeelTemp}}
+        <span class="feels-like"
+          >По ощущению:
+          {{ formattedFeelTemp }}
         </span>
       </div>
 
@@ -49,7 +56,7 @@
         </div>
         <div class="detail-item">
           <span class="label">Видимость</span>
-          <span class="value">{{ (currentWeather.visibility / 1000) }} км</span>
+          <span class="value">{{ currentWeather.visibility / 1000 }} км</span>
         </div>
       </div>
 
@@ -61,68 +68,71 @@
 </template>
 
 <script lang="ts">
-import {type DestinationStoreType, useDestinationStore } from "@/store/DestinationStore";
+import { type DestinationStoreType, useDestinationStore } from "@/store/DestinationStore";
 //подгружаю картинку из отдельного файла, куда они импортированы из assets
-import { backgroundMap, defaultBg } from '@/assets/backgroundMap';
-import { defineComponent } from 'vue';
-import {Weather} from "@/interfaces/weather";
+import { backgroundMap, defaultBg } from "@/assets/backgroundMap";
+import { defineComponent } from "vue";
+import { Weather } from "@/interfaces/weather";
+import FavoriteToggle from "@/components/Features/Favorites/FavoriteToggle.vue";
 
-export default defineComponent(
-    {
-      name: "CityShow",
-      data() {
-        return {
-          showBackground: false,
-        }
-      },
-      computed: {
-        destinationStore(): DestinationStoreType {
-          return useDestinationStore();
-        },
-        loading(): boolean {
-          return this.destinationStore.loading;
-        },
-        city(): string | null {
-          return this.destinationStore.city;
-        },
-        error(): string | null {
-          return this.destinationStore.error;
-        },
-        country(): string | null {
-          return this.destinationStore.country;
-        },
-        currentWeather(): Weather | null {
-          return this.destinationStore.currentWeather;
-        },
-        //добавление знака (+), если больше 0, так как API не выводит с +, если положительная температура
-        formattedTemp(): string | null {
-          if (!this.currentWeather) return null;
-          const temp = Math.round(this.currentWeather.main.temp);
-          return temp > 0 ? `+${temp}°C` : `${temp}°C`;
-        },
-        formattedFeelTemp(): string | null {
-          if (!this.currentWeather) return null;
-          const temp = Math.round(this.currentWeather.main.feels_like);
-          return temp > 0 ? `+${temp}°C` : `${temp}°C`;
-        },
-        //для фона
-        backgroundImage(): string {
-          if (!this.currentWeather) return '';
-          const icon = this.currentWeather.weather[0].icon;
-          return `url('${this.getBackgroundImage(icon)}')`;
-        }
-      },
-      methods: {
-        getWeatherIcon(iconCode: string): string {
-          // Пример: "01d" → https://openweathermap.org/img/wn/01d@2x.png
-          return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-        },
-        getBackgroundImage(iconCode: string): string {
-          return backgroundMap[iconCode] || defaultBg;
-        }
-      },
-    }
-)
+export default defineComponent({
+  name: "CityShow",
+  components: { FavoriteToggle },
+  data() {
+    return {
+      showBackground: false,
+    };
+  },
+  computed: {
+    destinationStore(): DestinationStoreType {
+      return useDestinationStore();
+    },
+    loading(): boolean {
+      return this.destinationStore.loading;
+    },
+    cityId(): number | null {
+      return this.destinationStore.id;
+    },
+    city(): string | null {
+      return this.destinationStore.city;
+    },
+    error(): string | null {
+      return this.destinationStore.error;
+    },
+    country(): string | null {
+      return this.destinationStore.country;
+    },
+    currentWeather(): Weather | null {
+      return this.destinationStore.currentWeather;
+    },
+    //добавление знака (+), если больше 0, так как API не выводит с +, если положительная температура
+    formattedTemp(): string | null {
+      if (!this.currentWeather) return null;
+      const temp = Math.round(this.currentWeather.main.temp);
+      return temp > 0 ? `+${temp}°C` : `${temp}°C`;
+    },
+    formattedFeelTemp(): string | null {
+      if (!this.currentWeather) return null;
+      const temp = Math.round(this.currentWeather.main.feels_like);
+      return temp > 0 ? `+${temp}°C` : `${temp}°C`;
+    },
+    //для фона
+    backgroundImage(): string {
+      if (!this.currentWeather) return "";
+      const icon = this.currentWeather.weather[0].icon;
+      return `url('${this.getBackgroundImage(icon)}')`;
+    },
+  },
+  methods: {
+    getWeatherIcon(iconCode: string): string {
+      // Пример: "01d" → https://openweathermap.org/img/wn/01d@2x.png
+      return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    },
+    getBackgroundImage(iconCode: string): string {
+      return backgroundMap[iconCode] || defaultBg;
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>
@@ -168,7 +178,9 @@ export default defineComponent(
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 }
 
@@ -194,13 +206,14 @@ export default defineComponent(
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 20px;
-  padding: 40px;
+  padding: 54px 40px 40px 40px;
   text-align: center;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   animation: fadeInUp 0.8s ease-out;
   max-width: 500px;
   width: 100%;
   color: #333;
+  position: relative;
 
   .weather-header {
     display: flex;
@@ -209,11 +222,11 @@ export default defineComponent(
     margin-bottom: 20px;
     flex-wrap: wrap;
 
-    @include medium{
+    @include medium {
       margin-bottom: 18px;
     }
 
-    @include small{
+    @include small {
       margin-bottom: 16px;
     }
 
@@ -225,11 +238,11 @@ export default defineComponent(
       flex: 1;
       text-align: left;
 
-      @include medium{
+      @include medium {
         font-size: 32px;
       }
 
-      @include small{
+      @include small {
         font-size: 28px;
       }
     }
@@ -237,9 +250,9 @@ export default defineComponent(
     .weather-icon img {
       width: 80px;
       height: 80px;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 
-      @include small{
+      @include small {
         width: 72px;
         height: 72px;
       }
@@ -252,11 +265,11 @@ export default defineComponent(
     flex-direction: column;
     gap: 10px 0;
 
-    @include medium{
+    @include medium {
       margin-bottom: 18px;
     }
 
-    @include small{
+    @include small {
       margin-bottom: 16px;
     }
 
@@ -268,11 +281,11 @@ export default defineComponent(
       -webkit-text-fill-color: transparent;
       line-height: 1;
 
-      @include medium{
+      @include medium {
         font-size: 48px;
       }
 
-      @include small{
+      @include small {
         font-size: 42px;
       }
     }
@@ -294,7 +307,7 @@ export default defineComponent(
       padding: 14px 0;
       border-bottom: 1px solid #ecf0f1;
 
-      @include x-small{
+      @include x-small {
         flex-direction: column;
         align-items: center;
       }
@@ -309,7 +322,7 @@ export default defineComponent(
         font-size: 18px;
         line-height: 110%;
 
-        @include small{
+        @include small {
           font-size: 22px;
         }
       }
@@ -329,21 +342,20 @@ export default defineComponent(
   }
 }
 
-/* Анимация появления */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.favorite-block {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  border: 1px solid rgb(128, 128, 128, 0.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @include small {
   .main-block {
-    padding: 28px 16px
+    padding: 28px 16px;
   }
 
   .weather-card {
@@ -369,13 +381,25 @@ export default defineComponent(
   }
 }
 
-@include x-small{
+@include x-small {
   .main-block {
-    padding: 22px 14px
+    padding: 22px 14px;
   }
 
   .weather-card {
     padding: 22px;
+  }
+}
+
+/* Анимация появления */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 </style>

@@ -1,58 +1,58 @@
 <template>
   <div class="current-time-wrap">
-    <span>{{formattedDateTime}}</span>
+    <span>{{ formattedDateTime }}</span>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'CurrentTime',
-  data(){
-    return{
-      formattedDateTime: ''
-    }
+  name: "CurrentTime",
+  data() {
+    return {
+      formattedDateTime: "",
+    };
   },
-  mounted(){
+  mounted() {
     //инициализация времени во время монтирования
     this.updateTime();
     //оновление каждую минуту (60000 мс) - this.interval не реактивная переменная, поэтому не обязательно указывать в data
-    this.interval = setInterval(this.updateTime, 60000)
+    this.interval = setInterval(this.updateTime, 60000);
   },
   beforeUnmount() {
     //очистка интервала во время размонтирования
-    if (this.interval){
-      clearInterval(this.interval)
+    if (this.interval) {
+      clearInterval(this.interval);
     }
   },
   methods: {
-    updateTime(){
+    updateTime() {
       const now = new Date();
 
       // Список дней недели на русском
       const daysOfWeek = [
-        'Воскресенье',
-        'Понедельник',
-        'Вторник',
-        'Среда',
-        'Четверг',
-        'Пятница',
-        'Суббота'
-      ]
+        "Воскресенье",
+        "Понедельник",
+        "Вторник",
+        "Среда",
+        "Четверг",
+        "Пятница",
+        "Суббота",
+      ];
 
       // Получение дня недели (0–6) - now.getDay() возвращает номер дня недели
-      const dayName = daysOfWeek[now.getDay()]
+      const dayName = daysOfWeek[now.getDay()];
 
       const hours = now.getHours();
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const month = String(now.getMonth() + 1).padStart(2, '0'); //месяцы идут от 0, поэтому прибавляем 1
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+      const month = String(now.getMonth() + 1).padStart(2, "0"); //месяцы идут от 0, поэтому прибавляем 1
       const year = now.getFullYear();
-      const day = String(now.getDate()).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, "0");
 
       //сбор итоговой строки
       this.formattedDateTime = `${dayName} (${day}.${month}), ${hours}:${minutes}`;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

@@ -1,40 +1,40 @@
 <template>
-  <Header/>
+  <Header />
   <Main>
-  <router-view/>
+    <router-view />
   </Main>
-  <Footer/>
+  <Footer />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useDestinationStore } from '@/store/DestinationStore';
+import { defineComponent } from "vue";
+import { useDestinationStore } from "@/store/DestinationStore";
 import Header from "@/components/Common/Header.vue";
 import Main from "@/components/Common/Main.vue";
 import Footer from "@/components/Common/Footer.vue";
-export default defineComponent
-({
+export default defineComponent({
   name: "App",
-  components: {Footer, Main, Header},
+  components: { Footer, Main, Header },
   async mounted() {
     const store = useDestinationStore();
-    try{
+    try {
       await store.fetchGeoData();
       await store.fetchWeatherForecast();
-    }
-    catch (error: unknown) {
-      console.error('Ошибка загрузки данных', error);
+    } catch (error: unknown) {
+      console.error("Ошибка загрузки данных", error);
     }
 
     // Автоматически обновлять каждые 30 минут
-    setInterval(() => {
-      store.fetchGeoData();
-      store.fetchWeatherForecast();
-      console.log('Прогноз обновлен')
-    }, 30 * 60 * 1000);
-  }
-})
-
+    setInterval(
+      () => {
+        store.fetchGeoData();
+        store.fetchWeatherForecast();
+        console.log("Прогноз обновлен");
+      },
+      30 * 60 * 1000,
+    );
+  },
+});
 </script>
 
 <style lang="scss">

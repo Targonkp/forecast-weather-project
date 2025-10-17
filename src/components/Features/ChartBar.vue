@@ -9,26 +9,20 @@
   </div>
 </template>
 
-<script>
-import { useDestinationStore } from "@/store/DestinationStore";
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale
-} from 'chart.js'
+<script lang="ts">
+import { type DestinationStoreType, useDestinationStore } from "@/store/DestinationStore";
+import { ForecastListItem } from "@/interfaces/forecast";
+import { defineComponent } from "vue";
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js";
 
-import { Bar } from 'vue-chartjs'
+import { Bar } from "vue-chartjs";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-export default {
-  name: 'ChartBar',
+export default defineComponent({
+  name: "ChartBar",
   components: {
-    Bar
+    Bar,
   },
   data() {
     return {
@@ -39,33 +33,30 @@ export default {
         plugins: {
           tooltip: {
             callbacks: {
-              label: function(context) {
+              label: function (context: any) {
                 const value = context.parsed.y;
                 return value > 0 ? `+${value}°C` : `${value}°C`;
-              }
-            }
-          }
-        }
-      }
+              },
+            },
+          },
+        },
+      },
     };
   },
   computed: {
     // Получение данных из Pinia-хранилища
-    destinationStore() {
+    destinationStore(): DestinationStoreType {
       return useDestinationStore();
-    },
-    // Массив прогнозов
-    listForecasts() {
-      return this.destinationStore.listForecasts?.list || [];
     },
     // Готовые данные для графика
     chartData() {
-      const temperatures = this.listForecasts.map(item =>
-          Math.round(item.main.temp)
-      );
+      //получаю и обрабатываю массив прогнозов
+      const forecasts: ForecastListItem[] = this.destinationStore.listForecasts?.list || [];
 
-      const labels = this.listForecasts.map((item, index) => {
-        let newDateTime = item.dt_txt.slice(0,16);
+      const temperatures = forecasts.map((item: ForecastListItem) => Math.round(item.main.temp));
+
+      const labels = forecasts.map((item: ForecastListItem) => {
+        let newDateTime = item.dt_txt.slice(0, 16);
         let [yearPart, timePart] = newDateTime.split(" ");
         let [year, month, day] = yearPart.split("-");
         let shortYear = year.slice(2);
@@ -77,28 +68,23 @@ export default {
         labels,
         datasets: [
           {
-            label: 'Температура',
-            backgroundColor: '#f87979',
+            label: "Температура",
+            backgroundColor: "#f87979",
             borderWidth: 1,
-            borderColor: 'rgba(60,4,4,0.5)',
+            borderColor: "rgba(60,4,4,0.5)",
             data: temperatures,
             fill: false,
-            tension: 0.2
-          }
-        ]
+            tension: 0.2,
+          },
+        ],
       };
-    }
+    },
   },
-  watch: {
-    listForecasts(newValue) {
-      console.log(newValue)
-    }
-  }
-};
+});
 </script>
 
 <style lang="scss" scoped>
-.chart-container{
+.chart-container {
   margin: 12px 0 8px 0;
 }
 

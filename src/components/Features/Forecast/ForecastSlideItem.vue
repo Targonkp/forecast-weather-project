@@ -2,14 +2,19 @@
   <div class="forecast-item">
     <div class="date">{{ formatDate(forecast.dt_txt) }}</div>
     <div class="temp-wrap">
-      <div class="temp">Температура: {{formattedTemp}}</div>
-      <div class="temp">По ощущению: {{formattedFeelTemp}}</div>
+      <div class="temp">Температура: {{ formattedTemp }}</div>
+      <div class="temp">По ощущению: {{ formattedFeelTemp }}</div>
     </div>
-    <div class="wind">Скорость ветра: {{ Math.round(forecast.wind.speed) }} м/с</div>
+    <div class="wind">
+      Скорость ветра: {{ Math.round(forecast.wind.speed) }} м/с
+    </div>
     <div class="description-wrap">
       <div class="description">{{ forecast.weather[0].description }}</div>
       <div class="image">
-        <img :src="getWeatherIcon(forecast.weather[0].icon)" :alt="forecast.weather[0].description">
+        <img
+          :src="getWeatherIcon(forecast.weather[0].icon)"
+          :alt="forecast.weather[0].description"
+        />
       </div>
     </div>
   </div>
@@ -17,12 +22,12 @@
 
 <script>
 export default {
-  name: 'ForecastSlideItem',
+  name: "ForecastSlideItem",
   props: {
     forecast: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     //добавление знака (+), если больше 0, так как API не выводит с +, если положительная температура
@@ -33,22 +38,22 @@ export default {
     formattedFeelTemp() {
       const temp = Math.round(this.forecast.main.feels_like);
       return temp > 0 ? `+${temp}°C` : `${temp}°C`;
-    }
+    },
   },
   methods: {
     formatDate(dateString) {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) {
-        return 'Неверная дата';
+        return "Неверная дата";
       }
       const options = {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit'
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
       };
-      let formatted = date.toLocaleString('ru-RU', options);
+      let formatted = date.toLocaleString("ru-RU", options);
       // Делаю первую букву заглавной - делю результат на две части и затем снова собираю
       formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
       return formatted;
@@ -57,8 +62,8 @@ export default {
       // Пример: "01d" → https://openweathermap.org/img/wn/01d@2x.png
       return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
     },
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -89,14 +94,14 @@ export default {
   color: $blue_color;
 }
 
-.temp-wrap{
+.temp-wrap {
   margin: 7px 0;
   padding: 5px 7px;
   background-color: rgba(74, 236, 61, 0.25);
   border-radius: 3px;
 }
 
-.description-wrap{
+.description-wrap {
   display: flex;
   flex-direction: row;
   margin: 5px 0 2px 0;
@@ -109,15 +114,15 @@ export default {
   color: $gray_color;
 }
 
-.wind{
+.wind {
   font-size: 18px;
   font-weight: 600;
 }
 
-.image{
+.image {
   width: 50px;
 
-  img{
+  img {
     display: block;
     width: 100%;
     height: auto;
