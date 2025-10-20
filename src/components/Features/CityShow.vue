@@ -58,6 +58,14 @@
           <span class="label">Видимость</span>
           <span class="value">{{ currentWeather.visibility / 1000 }} км</span>
         </div>
+        <div class="detail-item">
+          <span class="label">Восход</span>
+          <span class="value">{{ formattedTimeSunrise }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Закат</span>
+          <span class="value">{{ formattedTimeSunset }}</span>
+        </div>
       </div>
 
       <div class="weather-footer">
@@ -116,6 +124,15 @@ export default defineComponent({
       const temp = Math.round(this.currentWeather.main.feels_like);
       return temp > 0 ? `+${temp}°C` : `${temp}°C`;
     },
+    //длля восхода и заката
+    formattedTimeSunrise(): string | null {
+      const timestamp = this.currentWeather?.sys?.sunrise ?? 0;
+      return this.formatUnixTimestamp(timestamp);
+    },
+    formattedTimeSunset(): string | null {
+      const timestamp = this.currentWeather?.sys?.sunset ?? 0;
+      return this.formatUnixTimestamp(timestamp);
+    },
     //для фона
     backgroundImage(): string {
       if (!this.currentWeather) return "";
@@ -130,6 +147,13 @@ export default defineComponent({
     },
     getBackgroundImage(iconCode: string): string {
       return backgroundMap[iconCode] || defaultBg;
+    },
+    //Преобразование времени в миллисекундах - для восхода и заката
+    formatUnixTimestamp(timestamp: number): string {
+      const date = new Date(timestamp * 1000);
+      const hours = date.getHours().toString().padStart(2, "0");
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+      return `${hours}:${minutes}`;
     },
   },
 });

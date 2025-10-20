@@ -8,10 +8,7 @@
       <h2 class="forecast-date">{{ formatDate(forecast.dt_txt) }}</h2>
 
       <div class="weather-main">
-        <img
-          :src="weatherIconUrl(forecast.weather[0].icon)"
-          :alt="forecast.weather[0].description"
-        />
+        <img :src="weatherIconUrl(forecast.weather[0].icon)" :alt="forecast.weather[0].description" />
         <p class="description">{{ forecast.weather[0].description }}</p>
       </div>
 
@@ -19,9 +16,7 @@
         <li>
           <span>Температура:</span>
           {{ Math.round(forecast.main.temp) }}°C
-          <small
-            >(ощущается как {{ Math.round(forecast.main.feels_like) }}°C)</small
-          >
+          <small>(ощущается как {{ Math.round(forecast.main.feels_like) }}°C)</small>
         </li>
         <li>
           <span>Ветер:</span>
@@ -51,10 +46,7 @@
 
 <script lang="ts">
 import BlockWrap from "@/components/Common/BlockWrap.vue";
-import {
-  type DestinationStoreType,
-  useDestinationStore,
-} from "@/store/DestinationStore";
+import { type DestinationStoreType, useDestinationStore } from "@/store/DestinationStore";
 import { defineComponent } from "vue";
 import { ForecastListItem } from "@/interfaces/forecast";
 

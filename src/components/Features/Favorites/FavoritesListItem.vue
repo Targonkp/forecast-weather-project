@@ -1,5 +1,9 @@
 <template>
-  <div class="favorites-list-item" @click="getWeather(favoritesItem.city, favoritesItem.country)">
+  <div
+    class="favorites-list-item"
+    @click="getWeather(favoritesItem.city, favoritesItem.country)"
+    :title="favoritesItem.city"
+  >
     <div class="city-name">{{ favoritesItem.city }}</div>
     <div class="country-code">{{ favoritesItem.country }}</div>
   </div>
