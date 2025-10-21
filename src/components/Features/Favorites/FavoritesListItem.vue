@@ -39,11 +39,15 @@ export default defineComponent({
 .favorites-list-item {
   cursor: pointer;
   width: 100%;
+  font-size: 18px;
+  line-height: 110%;
   aspect-ratio: 1.5 / 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 4px;
+  box-sizing: border-box;
   background-color: rgba(241, 234, 227, 0.7);
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -55,6 +59,11 @@ export default defineComponent({
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  @include medium {
+    font-size: 16px;
+    line-height: 110%;
   }
 
   @include small {

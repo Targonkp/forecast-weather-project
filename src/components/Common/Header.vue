@@ -3,15 +3,11 @@
     <block-wrap>
       <nav>
         <router-link to="/" v-slot="{ isActive }"
-          ><span :class="['menu-link', isActive && 'menu-link-active']"
-            >Главная</span
-          ></router-link
+          ><span :class="['menu-link', isActive && 'menu-link-active']">Главная</span></router-link
         >
         |
         <router-link to="/forecast" v-slot="{ isActive }"
-          ><span :class="['menu-link', isActive && 'menu-link-active']"
-            >Прогноз</span
-          ></router-link
+          ><span :class="['menu-link', isActive && 'menu-link-active']">Прогноз</span></router-link
         >
       </nav>
     </block-wrap>
@@ -31,6 +27,7 @@ header {
   padding: 20px;
   box-sizing: border-box;
   background: $background_color_header;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
 
 nav {

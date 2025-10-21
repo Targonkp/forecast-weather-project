@@ -2,11 +2,13 @@
   <div class="favorites-list-wrap">
     <div class="favorites-list-container">
       <span class="heading">Избранное ({{ favoritesListLength }})</span>
-      <favorites-list-item
-        v-for="favoritesItem of favoritesList"
-        :key="favoritesItem.id"
-        :favoritesItem="favoritesItem"
-      />
+      <transition-group name="fade-list">
+        <favorites-list-item
+          v-for="favoritesItem of favoritesList"
+          :key="favoritesItem.id"
+          :favoritesItem="favoritesItem"
+        />
+      </transition-group>
     </div>
   </div>
 </template>
@@ -42,12 +44,13 @@ export default defineComponent({
   height: 90vh;
   height: 90dvh;
   overflow: hidden;
-  width: clamp(70px, 7%, 140px);
+  width: clamp(110px, 10%, 140px);
   background-color: rgba(110, 107, 105, 0.65);
   padding: 12px 0;
   box-sizing: border-box;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  word-break: break-all;
 
   @include small {
     width: 100%;
@@ -100,7 +103,7 @@ export default defineComponent({
 }
 
 .heading {
-  padding: 4px 8px;
+  padding: 8px;
   box-sizing: border-box;
   border-radius: 5px;
   background-color: $light_color;
@@ -111,5 +114,28 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
   }
+}
+
+.fade-list-enter-active,
+.fade-list-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-list-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+.fade-list-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-list-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-list-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
 }
 </style>
