@@ -37,6 +37,7 @@
         </li>
       </ul>
     </div>
+    <base-button @click="goBack">Назад</base-button>
   </div>
 
   <div class="forecast-card-wrap" v-else>
@@ -49,10 +50,11 @@ import BlockWrap from "@/components/Common/BlockWrap.vue";
 import { type DestinationStoreType, useDestinationStore } from "@/store/DestinationStore";
 import { defineComponent } from "vue";
 import { ForecastListItem } from "@/interfaces/forecast";
+import BaseButton from "@/components/UI/BaseButton.vue";
 
 export default defineComponent({
   name: "ForecastPageItem",
-  components: { BlockWrap },
+  components: { BaseButton, Button: BaseButton, BlockWrap },
   props: {
     slug: { type: String, required: true },
   },
@@ -105,6 +107,9 @@ export default defineComponent({
     },
     weatherIconUrl(iconCode: string): string {
       return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    },
+    goBack() {
+      this.$router.back();
     },
   },
   mounted() {

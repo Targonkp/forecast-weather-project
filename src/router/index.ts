@@ -48,7 +48,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   //обновление title
   document.title = (to.meta.title as string) || "Прогноз погоды";
-  //обновление или создаение meta description
+  //обновление или создание meta description
   let metaDescription = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
   if (!metaDescription) {
     metaDescription = document.createElement("meta") as HTMLMetaElement;
