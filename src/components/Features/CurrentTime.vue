@@ -4,12 +4,14 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "CurrentTime",
   data() {
     return {
       formattedDateTime: "",
+      interval: null as ReturnType<typeof setInterval> | null,
     };
   },
   mounted() {
@@ -29,7 +31,7 @@ export default {
       const now = new Date();
 
       // Список дней недели на русском
-      const daysOfWeek = [
+      const daysOfWeek: string[] = [
         "Воскресенье",
         "Понедельник",
         "Вторник",
@@ -41,7 +43,6 @@ export default {
 
       // Получение дня недели (0–6) - now.getDay() возвращает номер дня недели
       const dayName = daysOfWeek[now.getDay()];
-
       const hours = now.getHours();
       const minutes = String(now.getMinutes()).padStart(2, "0");
       const month = String(now.getMonth() + 1).padStart(2, "0"); //месяцы идут от 0, поэтому прибавляем 1
@@ -49,10 +50,10 @@ export default {
       const day = String(now.getDate()).padStart(2, "0");
 
       //сбор итоговой строки
-      this.formattedDateTime = `${dayName} (${day}.${month}), ${hours}:${minutes}`;
+      this.formattedDateTime = `${dayName} (${day}.${month}.${year}), ${hours}:${minutes}`;
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

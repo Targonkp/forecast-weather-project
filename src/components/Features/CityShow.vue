@@ -227,7 +227,8 @@ export default defineComponent({
 
 /* Карточка погоды */
 .weather-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.88);
+  opacity: 0.85;
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 54px 40px 40px 40px;
@@ -331,7 +332,12 @@ export default defineComponent({
       padding: 14px 0;
       border-bottom: 1px solid #ecf0f1;
 
+      @include small {
+        padding: 12px 0;
+      }
+
       @include x-small {
+        padding: 10px 0;
         flex-direction: column;
         align-items: center;
       }
@@ -379,7 +385,7 @@ export default defineComponent({
 
 @include small {
   .main-block {
-    padding: 28px 16px;
+    padding: 34px 22px;
   }
 
   .weather-card {
@@ -407,11 +413,11 @@ export default defineComponent({
 
 @include x-small {
   .main-block {
-    padding: 22px 14px;
+    padding: 28px 18px;
   }
 
   .weather-card {
-    padding: 22px;
+    padding: 20px;
   }
 }
 
