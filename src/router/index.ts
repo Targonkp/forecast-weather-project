@@ -34,6 +34,16 @@ const routes = [
     props: true,
   },
   {
+    path: "/map",
+    name: "Map",
+    component: () => import(/* webpackChunkName: "map" */ "@/views/Map.vue"),
+    meta: {
+      title: "Карта погоды",
+      description: "Карта осадков, облачности, скорости ветра, температуры",
+    },
+    props: true,
+  },
+  {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
     component: () => import(/* webpackChunkName: "notfound" */ "../views/NotFound.vue"),

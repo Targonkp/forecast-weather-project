@@ -1,7 +1,11 @@
 <template>
   <Header />
   <Main>
-    <router-view />
+    <router-view v-slot="{ Component }">
+      <keep-alive include="Map">
+        <component :is="Component" />
+      </keep-alive>
+    </router-view>
   </Main>
   <Footer />
 </template>

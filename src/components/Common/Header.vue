@@ -9,6 +9,10 @@
         <router-link to="/forecast" v-slot="{ isActive }"
           ><span :class="['menu-link', isActive && 'menu-link-active']">Прогноз</span></router-link
         >
+        |
+        <router-link to="/map" v-slot="{ isActive }"
+          ><span :class="['menu-link', isActive && 'menu-link-active']">Карта</span></router-link
+        >
       </nav>
     </block-wrap>
   </header>
