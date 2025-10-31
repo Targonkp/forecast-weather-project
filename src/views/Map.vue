@@ -31,12 +31,12 @@ export default defineComponent({
       z: 3 as number, //уровень зума, оптимальный для всей Земли
       tileSize: 256 as number,
       cacheTTL: (1000 * 60 * 30) as number, //30 минут кэш
-      lastTime: 0 as number, //последнее обновление кэша
       isDragging: false as boolean,
       offsetX: 0 as number,
       offsetY: 0 as number,
       lastX: 0 as number,
       lastY: 0 as number,
+      updateTimer: null as number | null,
     };
   },
   methods: {
@@ -48,13 +48,6 @@ export default defineComponent({
 
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
-
-      const shouldUpdate = this.shouldUpdateCache();
-      console.log(shouldUpdate);
-      if (!shouldUpdate) {
-        console.log("Кэш карты актуален - пропуск обновления карты");
-        return;
-      }
 
       //Размер итогового canvas
       canvas.width = tileSize * tilesPerAxis;
@@ -93,22 +86,6 @@ export default defineComponent({
         img.onerror = reject;
         img.src = url;
       });
-    },
-    shouldUpdateCache(): boolean {
-      const now = Date.now();
-      //если кэш ни разу не обновлялся
-      if (!this.lastTime) {
-        this.lastTime = now;
-        return true;
-      }
-      //если кэш истек
-      if (now - this.lastTime > this.cacheTTL) {
-        this.lastTime = now;
-        return true;
-      }
-
-      //если кэш актуален
-      return false;
     },
     startDrag(event: MouseEvent | TouchEvent) {
       this.isDragging = true;
@@ -173,10 +150,31 @@ export default defineComponent({
     onTouchCancel() {
       this.onMouseLeave();
     },
+    startAutoUpdate() {
+      if (!this.updateTimer) {
+        this.updateTimer = window.setInterval(() => {
+          console.log("Автоматическое обновление карты");
+          this.renderMap();
+        }, this.cacheTTL);
+      }
+    },
+    stopAutoUpdate() {
+      if (this.updateTimer) {
+        clearInterval(this.updateTimer);
+        this.updateTimer = null;
+      }
+    },
   },
   mounted() {
     this.renderMap();
     this.onDrag = throttle(this.onDrag, 50);
+    this.startAutoUpdate();
+  },
+  activated() {
+    this.startAutoUpdate();
+  },
+  deactivated() {
+    this.stopAutoUpdate();
   },
   computed: {
     layerTitle(): string {
