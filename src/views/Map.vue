@@ -117,7 +117,7 @@ export default defineComponent({
       const wrapWidth = wrapper.clientWidth;
       const wrapHeight = wrapper.clientHeight;
 
-      //ограничние по горизонтали
+      //ограничение по горизонтали
       const maxOffsetX = 0;
       const minOffsetX = wrapWidth - canvasWidth;
 
@@ -141,6 +141,36 @@ export default defineComponent({
     },
     endDrag() {
       this.isDragging = false;
+    },
+    onResize() {
+      const canvas = this.$refs.canvas as HTMLCanvasElement;
+      const wrapper = canvas.parentElement as HTMLElement;
+
+      const canvasWidth = canvas.clientWidth;
+      const canvasHeight = canvas.clientHeight;
+
+      const wrapperWidth = wrapper.clientWidth;
+      const wrapperHeight = wrapper.clientHeight;
+
+      const maxOffsetX = 0;
+      const minOffsetX = wrapperWidth - canvasWidth;
+
+      const maxOffsetY = 0;
+      const minOffsetY = wrapperHeight - canvasHeight;
+
+      if (this.offsetX < minOffsetX) {
+        this.offsetX = minOffsetX;
+      }
+      if (this.offsetX > maxOffsetX) {
+        this.offsetX = maxOffsetX;
+      }
+      if (this.offsetY < minOffsetY) {
+        this.offsetY = minOffsetY;
+      }
+      if (this.offsetY > maxOffsetY) {
+        this.offsetY = maxOffsetY;
+      }
+      canvas.style.transform = `translate(${this.offsetX}px, ${this.offsetY}px)`;
     },
     onMouseLeave() {
       if (this.isDragging) {
@@ -169,11 +199,15 @@ export default defineComponent({
     this.renderMap();
     this.onDrag = throttle(this.onDrag, 50);
     this.startAutoUpdate();
+    this.onResize = throttle(this.onResize, 50);
+    window.addEventListener("resize", this.onResize);
   },
   activated() {
+    window.removeEventListener("resize", this.onResize);
     this.startAutoUpdate();
   },
   deactivated() {
+    window.addEventListener("resize", this.onResize);
     this.stopAutoUpdate();
   },
   computed: {

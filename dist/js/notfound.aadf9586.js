@@ -1,2 +1,2 @@
 "use strict";(self["webpackChunkweather_project_vue3"]=self["webpackChunkweather_project_vue3"]||[]).push([[178],{9589:function(e,n,t){t.r(n),t.d(n,{default:function(){return l}});var u=t(6768);const r={class:"not-found"};function c(e,n,t,c,o,a){const s=(0,u.g2)("router-link");return(0,u.uX)(),(0,u.CE)("div",r,[n[1]||(n[1]=(0,u.Lk)("h1",null,"404",-1)),n[2]||(n[2]=(0,u.Lk)("p",null,"Страница не найдена",-1)),(0,u.bF)(s,{to:"/",class:"btn"},{default:(0,u.k6)(()=>[...n[0]||(n[0]=[(0,u.eW)("На главную",-1)])]),_:1})])}var o={name:"NotFound"},a=t(1241);const s=(0,a.A)(o,[["render",c],["__scopeId","data-v-64c2be9b"]]);var l=s}}]);
-//# sourceMappingURL=notfound.8ca06cee.js.map
+//# sourceMappingURL=notfound.aadf9586.js.map
