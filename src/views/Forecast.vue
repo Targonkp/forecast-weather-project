@@ -3,7 +3,7 @@
     <div v-if="listForecasts && listForecasts.length" class="forecasts-list-wrap">
       <h1 class="forecasts-header">Прогноз погоды на 5 дней - {{ cityName }}</h1>
       <div class="forecasts-list">
-        <Carousel aria-label="Карусель с прогнозом на 5 дней - каждые 3 часа" v-bind="carouselConfig">
+        <carousel aria-label="Карусель с прогнозом на 5 дней - каждые 3 часа" v-bind="carouselConfig">
           <Slide v-for="forecast in listForecasts" :key="forecast.dt">
             <router-link
               class="additional-router-class"
@@ -19,7 +19,7 @@
             <Navigation />
             <Pagination class="addition-pagination" />
           </template>
-        </Carousel>
+        </carousel>
       </div>
     </div>
     <div v-else-if="loading" class="loading-container">
@@ -27,7 +27,7 @@
       <p>Загружаем данные о погоде...</p>
     </div>
     <div v-else class="no-data">Нет данных о погоде</div>
-    <chart aria-label="Отображение подробного прогноза в виде графика" />
+    <char-bar-main aria-label="Отображение подробного прогноза в виде графика" />
   </div>
 </template>
 
@@ -37,15 +37,14 @@ import { type DestinationStoreType, useDestinationStore } from "@/store/Destinat
 import ForecastSlideItem from "@/components/Features/Forecast/ForecastSlideItem.vue";
 import { Carousel, Slide, Navigation, Pagination } from "vue3-carousel";
 import "vue3-carousel/dist/carousel.css";
-import ChartBar from "@/components/Features/ChartBar.vue";
 import { ForecastListItem } from "@/interfaces/forecast";
+import CharBarMain from "@/components/Features/ChartBar/CharBarMain.vue";
 
 export default defineComponent({
   name: "Forecast",
   components: {
+    CharBarMain,
     ForecastSlideItem,
-    Chart: ChartBar,
-    ForecastItem: ForecastSlideItem,
     Carousel,
     Slide,
     Navigation,

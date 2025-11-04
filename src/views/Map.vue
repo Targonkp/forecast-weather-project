@@ -113,7 +113,12 @@ export default defineComponent({
       this.lastY = point.clientY;
       this.offsetX += dx;
       this.offsetY += dy;
-
+      this.canvasSizeTransform();
+    },
+    endDrag() {
+      this.isDragging = false;
+    },
+    canvasSizeTransform() {
       const canvas = this.$refs.canvas as HTMLCanvasElement;
       const wrapper = canvas.parentElement as HTMLElement;
 
@@ -130,39 +135,6 @@ export default defineComponent({
       //ограничение по вертикали
       const maxOffsetY = 0;
       const minOffsetY = wrapHeight - canvasHeight;
-
-      if (this.offsetX < minOffsetX) {
-        this.offsetX = minOffsetX;
-      } else if (this.offsetX > maxOffsetX) {
-        this.offsetX = maxOffsetX;
-      }
-
-      if (this.offsetY < minOffsetY) {
-        this.offsetY = minOffsetY;
-      } else if (this.offsetY > maxOffsetY) {
-        this.offsetY = maxOffsetY;
-      }
-
-      canvas.style.transform = `translate(${this.offsetX}px, ${this.offsetY}px)`;
-    },
-    endDrag() {
-      this.isDragging = false;
-    },
-    onResize() {
-      const canvas = this.$refs.canvas as HTMLCanvasElement;
-      const wrapper = canvas.parentElement as HTMLElement;
-
-      const canvasWidth = canvas.clientWidth;
-      const canvasHeight = canvas.clientHeight;
-
-      const wrapperWidth = wrapper.clientWidth;
-      const wrapperHeight = wrapper.clientHeight;
-
-      const maxOffsetX = 0;
-      const minOffsetX = wrapperWidth - canvasWidth;
-
-      const maxOffsetY = 0;
-      const minOffsetY = wrapperHeight - canvasHeight;
 
       if (this.offsetX < minOffsetX) {
         this.offsetX = minOffsetX;
@@ -198,14 +170,14 @@ export default defineComponent({
   mounted() {
     this.renderMap();
     this.onDrag = throttle(this.onDrag, 50);
-    this.onResize = throttle(this.onResize, 100);
-    window.addEventListener("resize", this.onResize);
+    this.canvasSizeTransform = throttle(this.canvasSizeTransform, 50);
+    window.addEventListener("resize", this.canvasSizeTransform);
   },
   activated() {
-    window.addEventListener("resize", this.onResize);
+    window.addEventListener("resize", this.canvasSizeTransform);
   },
   deactivated() {
-    window.removeEventListener("resize", this.onResize);
+    window.removeEventListener("resize", this.canvasSizeTransform);
   },
   computed: {
     layerTitle(): string {

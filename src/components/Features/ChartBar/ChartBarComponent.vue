@@ -10,8 +10,6 @@
 </template>
 
 <script lang="ts">
-import { type DestinationStoreType, useDestinationStore } from "@/store/DestinationStore";
-import { ForecastListItem } from "@/interfaces/forecast";
 import { defineComponent } from "vue";
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js";
 
@@ -20,9 +18,15 @@ import { Bar } from "vue-chartjs";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default defineComponent({
-  name: "ChartBar",
+  name: "ChartBarComponent",
   components: {
     Bar,
+  },
+  props: {
+    chartData: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -42,43 +46,6 @@ export default defineComponent({
         },
       },
     };
-  },
-  computed: {
-    // Получение данных из Pinia-хранилища
-    destinationStore(): DestinationStoreType {
-      return useDestinationStore();
-    },
-    // Готовые данные для графика
-    chartData() {
-      //получаю и обрабатываю массив прогнозов
-      const forecasts: ForecastListItem[] = this.destinationStore.listForecasts?.list || [];
-
-      const temperatures = forecasts.map((item: ForecastListItem) => Math.round(item.main.temp));
-
-      const labels = forecasts.map((item: ForecastListItem) => {
-        let newDateTime = item.dt_txt.slice(0, 16);
-        let [yearPart, timePart] = newDateTime.split(" ");
-        let [year, month, day] = yearPart.split("-");
-        let shortYear = year.slice(2);
-
-        return `${day}.${month}.${shortYear} ${timePart}`;
-      });
-
-      return {
-        labels,
-        datasets: [
-          {
-            label: "Температура",
-            backgroundColor: "#f87979",
-            borderWidth: 1,
-            borderColor: "rgba(60,4,4,0.5)",
-            data: temperatures,
-            fill: false,
-            tension: 0.2,
-          },
-        ],
-      };
-    },
   },
 });
 </script>

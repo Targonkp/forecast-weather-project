@@ -16,6 +16,11 @@ import FavoritesList from "@/components/Features/Favorites/FavoritesList.vue";
 export default defineComponent({
   name: "HomeView",
   components: { FavoritesList, SearchBar, CurrentTime, CityShow },
+  data() {
+    return {
+      cityListVisible: false,
+    };
+  },
 });
 </script>
 

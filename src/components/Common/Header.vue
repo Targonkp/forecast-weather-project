@@ -28,13 +28,19 @@ export default {
 
 <style lang="scss" scoped>
 header {
-  padding: 20px;
+  padding: 10px;
   box-sizing: border-box;
   background: $background_color_header;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
 
 nav {
+  display: inline-block;
+  background: #558bae;
+  padding: 10px 80px;
+  box-sizing: border-box;
+  border-radius: 5px;
+
   a {
     text-decoration: none;
   }
@@ -45,6 +51,7 @@ nav {
   font-size: 24px;
   line-height: 110%;
   transition: 0.2s;
+  opacity: 0.85;
 
   &:hover {
     opacity: 0.7;
@@ -54,6 +61,7 @@ nav {
   &-active {
     color: $link_color_active;
     border-bottom: 1px solid $link_color_active;
+    opacity: 1;
   }
 }
 </style>
