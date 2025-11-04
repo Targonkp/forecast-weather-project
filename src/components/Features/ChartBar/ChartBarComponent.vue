@@ -1,6 +1,6 @@
 <template>
   <div class="chart-container">
-    <h2 class="chart-header">Температура в виде графика</h2>
+    <h2 class="chart-header">График - {{ header }}</h2>
     <div class="chart-scroll-wrapper">
       <div class="chart-wrap">
         <Bar :data="chartData" :options="options" />
@@ -23,29 +23,18 @@ export default defineComponent({
     Bar,
   },
   props: {
+    header: {
+      type: String,
+      required: true,
+    },
     chartData: {
       type: Object,
       required: true,
     },
-  },
-  data() {
-    return {
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        //чтобы сделать плюсовые значения, если больше 0, так как data принимает только числовые значения
-        plugins: {
-          tooltip: {
-            callbacks: {
-              label: function (context: any) {
-                const value = context.parsed.y;
-                return value > 0 ? `+${value}°C` : `${value}°C`;
-              },
-            },
-          },
-        },
-      },
-    };
+    options: {
+      type: Object,
+      required: true,
+    },
   },
 });
 </script>
