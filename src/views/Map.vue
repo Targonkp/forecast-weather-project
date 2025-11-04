@@ -12,6 +12,9 @@
     @touchcancel="onTouchCancel"
   >
     <canvas ref="canvas"></canvas>
+    <div class="dropdown-wrap">
+      <CustomDropdown @change="onSelectOption" :options="options" selected="Выбрать карту" />
+    </div>
   </div>
   <div class="map-caption">
     <span>Источник карты мира: OpenStreetMap.org</span>
@@ -21,22 +24,25 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { throttle } from "@/utils/throttle";
+import { mapsList } from "@/assets/mapsList";
+import CustomDropdown from "@/components/UI/CustomDropdown.vue";
 
 export default defineComponent({
   name: "Map",
+  components: { CustomDropdown },
   data() {
     return {
       apiKey: process.env.VUE_APP_OPENWEATHER_API_KEY as string,
       layer: "precipitation_new" as string,
       z: 3 as number, //уровень зума, оптимальный для всей Земли
       tileSize: 256 as number,
-      cacheTTL: (1000 * 60 * 30) as number, //30 минут кэш
       isDragging: false as boolean,
       offsetX: 0 as number,
       offsetY: 0 as number,
       lastX: 0 as number,
       lastY: 0 as number,
-      updateTimer: null as number | null,
+      //перебираю массив объектов и получаю массив с названиями на русском + делаю первую букву заглавной
+      options: mapsList.map((item) => item.name_ru.charAt(0).toUpperCase() + item.name_ru.slice(1)),
     };
   },
   methods: {
@@ -51,23 +57,23 @@ export default defineComponent({
 
       //Размер итогового canvas
       canvas.width = tileSize * tilesPerAxis;
-      canvas.height = tileSize * tilesPerAxis;
+      canvas.height = tileSize * (tilesPerAxis - 2);
 
       console.log(`Рисуем карту: z=${z}, тайлов=${tilesPerAxis ** 2}`);
 
-      //подготовка OSM подложки
+      //подготовка OSM подложки - начинаю с первого и заканчиваю на один меньше, чтобы карта была прямоугольной
       for (let x = 0; x < tilesPerAxis; x++) {
-        for (let y = 0; y < tilesPerAxis; y++) {
+        for (let y = 1; y < tilesPerAxis - 1; y++) {
           const osmUrl = `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
-          await this.drawTile(ctx, osmUrl, x, y);
+          await this.drawTile(ctx, osmUrl, x, y - 1);
         }
       }
 
-      //Загрузка тайлов для слоя погоды - поверх подложки
+      //Загрузка тайлов для слоя погоды - поверх подложки - начинаю с первого и заканчиваю на один меньше, чтобы карта была прямоугольной
       for (let x = 0; x < tilesPerAxis; x++) {
-        for (let y = 0; y < tilesPerAxis; y++) {
+        for (let y = 1; y < tilesPerAxis - 1; y++) {
           const url = `https://tile.openweathermap.org/map/${layer}/${z}/${x}/${y}.png?appid=${apiKey}`;
-          await this.drawTile(ctx, url, x, y);
+          await this.drawTile(ctx, url, x, y - 1);
         }
       }
 
@@ -180,35 +186,26 @@ export default defineComponent({
     onTouchCancel() {
       this.onMouseLeave();
     },
-    startAutoUpdate() {
-      if (!this.updateTimer) {
-        this.updateTimer = window.setInterval(() => {
-          console.log("Автоматическое обновление карты");
-          this.renderMap();
-        }, this.cacheTTL);
-      }
-    },
-    stopAutoUpdate() {
-      if (this.updateTimer) {
-        clearInterval(this.updateTimer);
-        this.updateTimer = null;
-      }
+    onSelectOption(value: string) {
+      //фильтрую массив объектов, нахожу элемент, у которого название на русском соответствует тому, что пришло по клику из emit
+      mapsList.filter((item) => {
+        if (item.name_ru.toLowerCase() === value.toLowerCase()) {
+          this.layer = item.name_en;
+        }
+      });
     },
   },
   mounted() {
     this.renderMap();
     this.onDrag = throttle(this.onDrag, 50);
-    this.startAutoUpdate();
-    this.onResize = throttle(this.onResize, 50);
+    this.onResize = throttle(this.onResize, 100);
     window.addEventListener("resize", this.onResize);
   },
   activated() {
-    window.removeEventListener("resize", this.onResize);
-    this.startAutoUpdate();
+    window.addEventListener("resize", this.onResize);
   },
   deactivated() {
-    window.addEventListener("resize", this.onResize);
-    this.stopAutoUpdate();
+    window.removeEventListener("resize", this.onResize);
   },
   computed: {
     layerTitle(): string {
@@ -228,6 +225,11 @@ export default defineComponent({
       }
     },
   },
+  watch: {
+    layer() {
+      this.renderMap();
+    },
+  },
 });
 </script>
 
@@ -243,15 +245,35 @@ export default defineComponent({
   background: #818b90;
   cursor: grab;
 
+  @include medium {
+    aspect-ratio: 1/0.75;
+  }
+
+  @include small {
+    aspect-ratio: 1/1;
+  }
+
+  @include x-small {
+    aspect-ratio: 1/1.25;
+  }
+
   &:active {
     cursor: grabbing;
   }
+}
+
+.dropdown-wrap {
+  position: absolute;
+  top: 8px;
+  right: 6px;
+  z-index: 10;
 }
 
 canvas {
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 1;
   transition: transform 0s;
   image-rendering: pixelated;
 }
