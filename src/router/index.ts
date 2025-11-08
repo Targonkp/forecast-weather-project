@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useDestinationStore } from "@/store/DestinationStore";
 import Home from "../views/Home.vue";
+import { ForecastListItem } from "@/interfaces/forecast";
 
 const routes = [
   {
@@ -26,6 +28,21 @@ const routes = [
     path: "/forecast/:slug",
     name: "Forecast.show",
     component: () => import("@/components/Features/Forecast/ForecastPageItem.vue"),
+    //guard - валидация доступа к маршруту
+    beforeEnter: (to: any, from: any, next: any) => {
+      const list: ForecastListItem[] = useDestinationStore().listForecasts?.list || [];
+      const slug: string = to.params.slug;
+      const isValid: boolean = list.some((element: ForecastListItem) => {
+        let el = element.dt_txt.split(" ");
+        let res = el[0] + "-" + el[1];
+        return res === slug;
+      });
+      if (isValid) {
+        next();
+      } else {
+        next({ name: "NotFound" });
+      }
+    },
     meta: {
       title: "Прогноз погоды",
       description:
